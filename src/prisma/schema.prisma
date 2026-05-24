@@ -1,0 +1,149 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [postgis]
+}
+
+// ─────────────────────────────────────────
+// USERS
+// ─────────────────────────────────────────
+
+enum Role {
+  VIEWER
+  CONTRIBUTOR
+  ADMIN
+
+  @@map("role")
+}
+
+enum ConservationStatus {
+  NOT_EVALUATED
+  LEAST_CONCERN
+  NEAR_THREATENED
+  VULNERABLE
+  ENDANGERED
+  CRITICALLY_ENDANGERED
+  EXTINCT_IN_WILD
+  EXTINCT
+
+  @@map("conservation_status")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(VIEWER)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  createdPlants Plant[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// PLANTS
+// ─────────────────────────────────────────
+
+model Plant {
+  id                 String             @id @default(uuid())
+  scientificName     String             @unique @map("scientific_name")
+  commonName         String?            @map("common_name")
+  family             String?
+  genus              String?
+  species            String?
+  author             String?
+  conservationStatus ConservationStatus @default(NOT_EVALUATED) @map("conservation_status")
+  description        String?
+  imageUrl           String?            @map("image_url")
+  externalId         String?            @unique @map("external_id")
+  createdById        String?            @map("created_by_id")
+  createdBy          User?              @relation(fields: [createdById], references: [id])
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  occurrences  Occurrence[]
+  plantRegions PlantRegion[]
+  plantTags    PlantTag[]
+
+  @@map("plants")
+}
+
+// ─────────────────────────────────────────
+// REGIONS
+// ─────────────────────────────────────────
+
+model Region {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  code        String   @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  plantRegions PlantRegion[]
+  occurrences  Occurrence[]
+
+  @@map("regions")
+}
+
+model PlantRegion {
+  plantId  String @map("plant_id")
+  regionId String @map("region_id")
+  plant    Plant  @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  region   Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
+
+  @@id([plantId, regionId])
+  @@map("plant_regions")
+}
+
+// ─────────────────────────────────────────
+// OCCURRENCES
+// ─────────────────────────────────────────
+
+model Occurrence {
+  id            String    @id @default(uuid())
+  plantId       String    @map("plant_id")
+  plant         Plant     @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  regionId      String?   @map("region_id")
+  region        Region?   @relation(fields: [regionId], references: [id])
+  latitude      Float
+  longitude     Float
+  recordedDate  DateTime? @map("recorded_date")
+  basisOfRecord String?   @map("basis_of_record")
+  dataProvider  String?   @map("data_provider")
+  externalId    String?   @unique @map("external_id")
+  location      Unsupported("geography(Point, 4326)")?
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@map("occurrences")
+}
+
+// ─────────────────────────────────────────
+// TAGS
+// ─────────────────────────────────────────
+
+model Tag {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  plantTags PlantTag[]
+
+  @@map("tags")
+}
+
+model PlantTag {
+  plantId String @map("plant_id")
+  tagId   String @map("tag_id")
+  plant   Plant  @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([plantId, tagId])
+  @@map("plant_tags")
+}
