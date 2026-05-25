@@ -1,16 +1,11 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
+  provider = "prisma-client"
+  output   = "./generated/prisma"
 }
 
 datasource db {
-  provider   = "postgresql"
-  extensions = [postgis]
+  provider = "postgresql"
 }
-
-// ─────────────────────────────────────────
-// USERS
-// ─────────────────────────────────────────
 
 enum Role {
   VIEWER
@@ -46,10 +41,6 @@ model User {
   @@map("users")
 }
 
-// ─────────────────────────────────────────
-// PLANTS
-// ─────────────────────────────────────────
-
 model Plant {
   id                 String             @id @default(uuid())
   scientificName     String             @unique @map("scientific_name")
@@ -73,10 +64,6 @@ model Plant {
 
   @@map("plants")
 }
-
-// ─────────────────────────────────────────
-// REGIONS
-// ─────────────────────────────────────────
 
 model Region {
   id          String   @id @default(uuid())
@@ -102,36 +89,28 @@ model PlantRegion {
   @@map("plant_regions")
 }
 
-// ─────────────────────────────────────────
-// OCCURRENCES
-// ─────────────────────────────────────────
-
 model Occurrence {
-  id            String    @id @default(uuid())
-  plantId       String    @map("plant_id")
-  plant         Plant     @relation(fields: [plantId], references: [id], onDelete: Cascade)
-  regionId      String?   @map("region_id")
-  region        Region?   @relation(fields: [regionId], references: [id])
+  id            String                                 @id @default(uuid())
+  plantId       String                                 @map("plant_id")
+  plant         Plant                                  @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  regionId      String?                                @map("region_id")
+  region        Region?                                @relation(fields: [regionId], references: [id])
   latitude      Float
   longitude     Float
-  recordedDate  DateTime? @map("recorded_date")
-  basisOfRecord String?   @map("basis_of_record")
-  dataProvider  String?   @map("data_provider")
-  externalId    String?   @unique @map("external_id")
+  recordedDate  DateTime?                              @map("recorded_date")
+  basisOfRecord String?                                @map("basis_of_record")
+  dataProvider  String?                                @map("data_provider")
+  externalId    String?                                @unique @map("external_id")
   location      Unsupported("geography(Point, 4326)")?
-  createdAt     DateTime  @default(now()) @map("created_at")
+  createdAt     DateTime                               @default(now()) @map("created_at")
 
   @@map("occurrences")
 }
 
-// ─────────────────────────────────────────
-// TAGS
-// ─────────────────────────────────────────
-
 model Tag {
-  id        String     @id @default(uuid())
-  name      String     @unique
-  createdAt DateTime   @default(now()) @map("created_at")
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
 
   plantTags PlantTag[]
 
