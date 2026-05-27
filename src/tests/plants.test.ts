@@ -10,8 +10,9 @@ let contributorToken: string;
 let viewerToken: string;
 let regionId: string;
 let plantId: string;
+let tagId: string;
 
-// --- Create shared users and a region for use in all tests
+// --- Create shared resources for use in all tests
 beforeAll(async () => {
   // Register users and get tokens
   adminToken = (
@@ -32,13 +33,21 @@ beforeAll(async () => {
       .send({ email: "plant_viewer@test.com", password: "password123", role: "VIEWER" })
   ).body.token;
 
-  // Create a shared region
+  // Create a region for use in test
   const res = await request
     .post("/regions")
     .set("Authorization", `Bearer ${adminToken}`)
     .send({ name: "Test Region", code: "TST" });
 
   regionId = res.body.data.id;
+
+  // Create a tag for use in test
+  const tagRes = await request
+    .post("/tags")
+    .set("Authorization", `Bearer ${adminToken}`)
+    .send({ name: "native" });
+
+  tagId = tagRes.body.data.id;
 });
 
 describe("GET /plants", () => {
@@ -152,5 +161,216 @@ describe("DELETE /plants/:id", () => {
       .delete(`/plants/${plantId}`)
       .set("Authorization", `Bearer ${adminToken}`);
     expect(res.status).toBe(204);
+  });
+});
+
+describe("POST /plants/:id/regions/:regionId - link plant to region", () => {
+  beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.plantRegion.deleteMany();
+    await prisma.occurrence.deleteMany();
+    await prisma.plant.deleteMany();
+
+    // Create a plant to use for linking
+    const res = await request
+      .post("/plants")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ scientificName: "Scientific Name", commonName: "Common Name" });
+
+    plantId = res.body.data.id;
+  });
+
+  it("links a plant to a region as CONTRIBUTOR", async () => {
+    const res = await request
+      .post(`/plants/${plantId}/regions/${regionId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.plantId).toBe(plantId);
+    expect(res.body.data.regionId).toBe(regionId);
+  });
+
+  it("returns 409 if region already linked", async () => {
+    await request
+      .post(`/plants/${plantId}/regions/${regionId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    const res = await request
+      .post(`/plants/${plantId}/regions/${regionId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    expect(res.status).toBe(409);
+  });
+
+  it("returns 404 for unknown regionId", async () => {
+    const res = await request
+      .post(`/plants/${plantId}/regions/nonexistent-id`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    expect(res.status).toBe(404);
+  });
+
+  it("returns 403 for VIEWER role", async () => {
+    const res = await request
+      .post(`/plants/${plantId}/regions/${regionId}`)
+      .set("Authorization", `Bearer ${viewerToken}`);
+
+    expect(res.status).toBe(403);
+  });
+});
+
+describe("DELETE /plants/:id/regions/:regionId - unlink plant from region", () => {
+  beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.plantRegion.deleteMany();
+    await prisma.occurrence.deleteMany();
+    await prisma.plant.deleteMany();
+
+    // Create a plant to use for linking
+    const res = await request
+      .post("/plants")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ scientificName: "Scientific Name", commonName: "Common Name" });
+
+    plantId = res.body.data.id;
+
+    // Link the plant to a region first
+    await request
+      .post(`/plants/${plantId}/regions/${regionId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+  });
+
+  it("unlinks a plant from a region as ADMIN", async () => {
+    const res = await request
+      .delete(`/plants/${plantId}/regions/${regionId}`)
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(204);
+  });
+
+  it("returns 404 if region was not linked", async () => {
+    await request
+      .delete(`/plants/${plantId}/regions/${regionId}`)
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    // Try to unlink again
+    const res = await request
+      .delete(`/plants/${plantId}/regions/${regionId}`)
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(404);
+  });
+
+  it("returns 403 for CONTRIBUTOR role", async () => {
+    const res = await request
+      .delete(`/plants/${plantId}/regions/${regionId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    expect(res.status).toBe(403);
+  });
+});
+
+describe("POST /plants/:id/tags/:tagId - link plant to tag", () => {
+  beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.plantRegion.deleteMany();
+    await prisma.occurrence.deleteMany();
+    await prisma.plant.deleteMany();
+
+    // Create a plant to use for linking
+    const res = await request
+      .post("/plants")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ scientificName: "Scientific Name", commonName: "Common Name" });
+
+    plantId = res.body.data.id;
+  });
+
+  it("links a tag to a plant as CONTRIBUTOR", async () => {
+    const res = await request
+      .post(`/plants/${plantId}/tags/${tagId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.plantId).toBe(plantId);
+    expect(res.body.data.tagId).toBe(tagId);
+  });
+
+  it("returns 409 if tag already linked", async () => {
+    await request
+      .post(`/plants/${plantId}/tags/${tagId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    const res = await request
+      .post(`/plants/${plantId}/tags/${tagId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    expect(res.status).toBe(409);
+  });
+
+  it("returns 404 for unknown tagId", async () => {
+    const res = await request
+      .post(`/plants/${plantId}/tags/nonexistent-id`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    expect(res.status).toBe(404);
+  });
+
+  it("returns 403 for VIEWER role", async () => {
+    const res = await request
+      .post(`/plants/${plantId}/tags/${tagId}`)
+      .set("Authorization", `Bearer ${viewerToken}`);
+
+    expect(res.status).toBe(403);
+  });
+});
+
+describe("DELETE /plants/:id/tags/:tagId - unlink plant from tag", () => {
+  beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.plantRegion.deleteMany();
+    await prisma.occurrence.deleteMany();
+    await prisma.plant.deleteMany();
+
+    // Create a plant to use for linking
+    const res = await request
+      .post("/plants")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ scientificName: "Scientific Name", commonName: "Common Name" });
+
+    plantId = res.body.data.id;
+
+    // Link the plant to a tag first
+    await request
+      .post(`/plants/${plantId}/tags/${tagId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+  });
+
+  it("unlinks a tag from a plant as ADMIN", async () => {
+    const res = await request
+      .delete(`/plants/${plantId}/tags/${tagId}`)
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(204);
+  });
+
+  it("returns 404 if tag was not linked", async () => {
+    await request
+      .delete(`/plants/${plantId}/tags/${tagId}`)
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    const res = await request
+      .delete(`/plants/${plantId}/tags/${tagId}`)
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(404);
+  });
+
+  it("returns 403 for CONTRIBUTOR role", async () => {
+    const res = await request
+      .delete(`/plants/${plantId}/tags/${tagId}`)
+      .set("Authorization", `Bearer ${contributorToken}`);
+
+    expect(res.status).toBe(403);
   });
 });
