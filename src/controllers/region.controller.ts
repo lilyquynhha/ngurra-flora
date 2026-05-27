@@ -33,7 +33,21 @@ export const getRegionById = async (
     const region = await prisma.region.findUnique({
       where: { id: id as string },
       include: {
-        _count: { select: { plantRegions: true, occurrences: true } },
+        plantRegions: {
+          include: {
+            plant: {
+              select: {
+                id: true,
+                scientificName: true,
+                commonName: true,
+                species: true,
+                conservationStatus: true,
+                description: true,
+              },
+            },
+          },
+        },
+        _count: { select: { occurrences: true } },
       },
     });
 
@@ -42,7 +56,13 @@ export const getRegionById = async (
       return;
     }
 
-    res.json({ data: region });
+    const { plantRegions, ...regionData } = region;
+    res.json({
+      data: {
+        ...regionData,
+        plants: plantRegions.map((pr) => pr.plant),
+      },
+    });
   } catch (err) {
     next(err);
   }

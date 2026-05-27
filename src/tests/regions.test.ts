@@ -69,8 +69,8 @@ describe("GET /regions/:id", () => {
     expect(res.status).toBe(200);
     expect(res.body.data.id).toBe(regionId);
     expect(res.body.data.name).toBe("Queensland");
-    expect(res.body.data._count).toHaveProperty("plantRegions");
     expect(res.body.data._count).toHaveProperty("occurrences");
+    expect(res.body.data.plants).toBeInstanceOf(Array);
   });
 
   it("returns 404 for unknown ID", async () => {
