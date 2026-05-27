@@ -1,7 +1,8 @@
 import prisma from "../lib/prisma";
-import { beforeEach, beforeAll, afterAll } from "vitest";
+import { beforeAll, afterAll } from "vitest";
 
-beforeEach(async () => {
+// Wipe database before each test suite
+beforeAll(async () => {
   await prisma.plantTag.deleteMany();
   await prisma.plantRegion.deleteMany();
   await prisma.occurrence.deleteMany();

@@ -1,6 +1,7 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import supertest from "supertest";
 import app from "../index";
+import prisma from "../lib/prisma";
 
 const request = supertest(app);
 
@@ -8,6 +9,10 @@ const testUser = {
   email: "test@example.com",
   password: "password123",
 };
+
+beforeEach(async () => {
+  await prisma.user.deleteMany();
+});
 
 describe("POST /auth/register", () => {
   it("creates a new user and returns a token", async () => {

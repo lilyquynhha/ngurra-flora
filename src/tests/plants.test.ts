@@ -1,18 +1,9 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach } from "vitest";
 import supertest from "supertest";
 import app from "../index";
+import prisma from "../lib/prisma";
 
 const request = supertest(app);
-
-// Helper: register and return token for a given role
-const getToken = async (role: "ADMIN" | "CONTRIBUTOR" | "VIEWER") => {
-  const email = `${role.toLowerCase()}@test.com`;
-  const password = "password123";
-  await request.post("/auth/register").send({ email, password, role });
-
-  const res = await request.post("/auth/login").send({ email, password });
-  return res.body.token;
-};
 
 let adminToken: string;
 let contributorToken: string;
@@ -20,24 +11,32 @@ let viewerToken: string;
 let regionId: string;
 let plantId: string;
 
-beforeEach(async () => {
-  adminToken = await getToken("ADMIN");
-  contributorToken = await getToken("CONTRIBUTOR");
-  viewerToken = await getToken("VIEWER");
+// --- Create shared users and a region for use in all tests
+beforeAll(async () => {
+  // Register users and get tokens
+  adminToken = (
+    await request
+      .post("/auth/register")
+      .send({ email: "plant_admin@test.com", password: "password123", role: "ADMIN" })
+  ).body.token;
 
-  // Create a region to use in plant tests
+  contributorToken = (
+    await request
+      .post("/auth/register")
+      .send({ email: "plant_contributor@test.com", password: "password123", role: "CONTRIBUTOR" })
+  ).body.token;
+
+  viewerToken = (
+    await request
+      .post("/auth/register")
+      .send({ email: "plant_viewer@test.com", password: "password123", role: "VIEWER" })
+  ).body.token;
+
+  // Create a shared region
   const res = await request
     .post("/regions")
     .set("Authorization", `Bearer ${adminToken}`)
     .send({ name: "Test Region", code: "TST" });
-
-  //   expect(res.status).toBe(201);
-  //   expect(res.body.data).toBeDefined();
-
-  if (res.status !== 201) {
-    console.error(res.body);
-    throw new Error("Failed to create test region");
-  }
 
   regionId = res.body.data.id;
 });
@@ -52,6 +51,14 @@ describe("GET /plants", () => {
 });
 
 describe("POST /plants", () => {
+  // Wipe plants between tests
+  beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.plantRegion.deleteMany();
+    await prisma.occurrence.deleteMany();
+    await prisma.plant.deleteMany();
+  });
+
   it("creates a plant as CONTRIBUTOR", async () => {
     const res = await request
       .post("/plants")
@@ -90,9 +97,13 @@ describe("POST /plants", () => {
   });
 });
 
-describe("GET /plants/:id", async () => {
-  // Create a plant before each test in this block
+describe("GET /plants/:id", () => {
   beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.plantRegion.deleteMany();
+    await prisma.occurrence.deleteMany();
+    await prisma.plant.deleteMany();
+
     const res = await request
       .post("/plants")
       .set("Authorization", `Bearer ${contributorToken}`)
@@ -114,13 +125,17 @@ describe("GET /plants/:id", async () => {
   });
 });
 
-describe("DELETE /plants/:id", async () => {
-  // Create a plant before each test in this block
+describe("DELETE /plants/:id", () => {
   beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.plantRegion.deleteMany();
+    await prisma.occurrence.deleteMany();
+    await prisma.plant.deleteMany();
+
     const res = await request
       .post("/plants")
       .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ scientificName: "Eucalyptus globulus", commonName: "Blue Gum" });
+      .send({ scientificName: "Banksia serrata", commonName: "Old Man Banksia" });
 
     plantId = res.body.data.id;
   });
