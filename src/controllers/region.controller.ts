@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import prisma from "../lib/prisma";
 
 // --- Get all regions
-
 export const getAllRegions = async (
   _req: Request,
   res: Response,
@@ -23,7 +22,6 @@ export const getAllRegions = async (
 };
 
 // --- Get region by ID
-
 export const getRegionById = async (
   req: Request,
   res: Response,
@@ -51,7 +49,6 @@ export const getRegionById = async (
 };
 
 // --- Create a new region
-
 export const createRegion = async (
   req: Request,
   res: Response,
@@ -80,7 +77,6 @@ export const createRegion = async (
 };
 
 // --- Update an existing region
-
 export const updateRegion = async (
   req: Request,
   res: Response,
@@ -110,7 +106,6 @@ export const updateRegion = async (
 };
 
 // --- Delete an existing region
-
 export const deleteRegion = async (
   req: Request,
   res: Response,
