@@ -8,6 +8,7 @@ import {
   linkPlantToRegion,
   unlinkPlantFromRegion,
 } from "../controllers/plant.controller";
+import { linkPlantToTag, unlinkPlantFromTag } from "../controllers/plant.controller";
 import { authenticate } from "../middleware/authenticate";
 import { requireRole } from "../middleware/requireRole";
 
@@ -27,5 +28,9 @@ router.post(
   linkPlantToRegion,
 );
 router.delete("/:id/regions/:regionId", authenticate, requireRole("ADMIN"), unlinkPlantFromRegion);
+
+// Tag association
+router.post("/:id/tags/:tagId", authenticate, requireRole("ADMIN", "CONTRIBUTOR"), linkPlantToTag);
+router.delete("/:id/tags/:tagId", authenticate, requireRole("ADMIN"), unlinkPlantFromTag);
 
 export default router;

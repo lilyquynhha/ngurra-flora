@@ -302,3 +302,55 @@ export const unlinkPlantFromRegion = async (
     next(err);
   }
 };
+
+// --- Link plant to a tag
+
+export const linkPlantToTag = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { id, tagId } = req.params;
+
+    await prisma.plantTag.create({
+      data: { plantId: id as string, tagId: tagId as string },
+    });
+
+    res.status(201).json({ data: { plantId: id, tagId } });
+  } catch (err: any) {
+    if (err.code === "P2002") {
+      res.status(409).json({ error: "Tag already linked to this plant" });
+      return;
+    }
+    if (err.code === "P2003") {
+      res.status(404).json({ error: "Plant or tag not found" });
+      return;
+    }
+    next(err);
+  }
+};
+
+// --- Unlink plant from a tag
+
+export const unlinkPlantFromTag = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { id, tagId } = req.params;
+
+    await prisma.plantTag.delete({
+      where: { plantId_tagId: { plantId: id as string, tagId: tagId as string } },
+    });
+
+    res.status(204).send();
+  } catch (err: any) {
+    if (err.code === "P2025") {
+      res.status(404).json({ error: "Tag not linked to this plant" });
+      return;
+    }
+    next(err);
+  }
+};
