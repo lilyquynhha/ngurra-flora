@@ -94,7 +94,6 @@ export const PlantScalarFieldEnum = {
   commonName: 'commonName',
   family: 'family',
   genus: 'genus',
-  species: 'species',
   author: 'author',
   conservationStatus: 'conservationStatus',
   description: 'description',

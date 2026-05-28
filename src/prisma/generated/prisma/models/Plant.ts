@@ -30,7 +30,6 @@ export type PlantMinAggregateOutputType = {
   commonName: string | null
   family: string | null
   genus: string | null
-  species: string | null
   author: string | null
   conservationStatus: $Enums.ConservationStatus | null
   description: string | null
@@ -47,7 +46,6 @@ export type PlantMaxAggregateOutputType = {
   commonName: string | null
   family: string | null
   genus: string | null
-  species: string | null
   author: string | null
   conservationStatus: $Enums.ConservationStatus | null
   description: string | null
@@ -64,7 +62,6 @@ export type PlantCountAggregateOutputType = {
   commonName: number
   family: number
   genus: number
-  species: number
   author: number
   conservationStatus: number
   description: number
@@ -83,7 +80,6 @@ export type PlantMinAggregateInputType = {
   commonName?: true
   family?: true
   genus?: true
-  species?: true
   author?: true
   conservationStatus?: true
   description?: true
@@ -100,7 +96,6 @@ export type PlantMaxAggregateInputType = {
   commonName?: true
   family?: true
   genus?: true
-  species?: true
   author?: true
   conservationStatus?: true
   description?: true
@@ -117,7 +112,6 @@ export type PlantCountAggregateInputType = {
   commonName?: true
   family?: true
   genus?: true
-  species?: true
   author?: true
   conservationStatus?: true
   description?: true
@@ -207,7 +201,6 @@ export type PlantGroupByOutputType = {
   commonName: string | null
   family: string | null
   genus: string | null
-  species: string | null
   author: string | null
   conservationStatus: $Enums.ConservationStatus
   description: string | null
@@ -245,7 +238,6 @@ export type PlantWhereInput = {
   commonName?: Prisma.StringNullableFilter<"Plant"> | string | null
   family?: Prisma.StringNullableFilter<"Plant"> | string | null
   genus?: Prisma.StringNullableFilter<"Plant"> | string | null
-  species?: Prisma.StringNullableFilter<"Plant"> | string | null
   author?: Prisma.StringNullableFilter<"Plant"> | string | null
   conservationStatus?: Prisma.EnumConservationStatusFilter<"Plant"> | $Enums.ConservationStatus
   description?: Prisma.StringNullableFilter<"Plant"> | string | null
@@ -266,7 +258,6 @@ export type PlantOrderByWithRelationInput = {
   commonName?: Prisma.SortOrderInput | Prisma.SortOrder
   family?: Prisma.SortOrderInput | Prisma.SortOrder
   genus?: Prisma.SortOrderInput | Prisma.SortOrder
-  species?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.SortOrderInput | Prisma.SortOrder
   conservationStatus?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -291,7 +282,6 @@ export type PlantWhereUniqueInput = Prisma.AtLeast<{
   commonName?: Prisma.StringNullableFilter<"Plant"> | string | null
   family?: Prisma.StringNullableFilter<"Plant"> | string | null
   genus?: Prisma.StringNullableFilter<"Plant"> | string | null
-  species?: Prisma.StringNullableFilter<"Plant"> | string | null
   author?: Prisma.StringNullableFilter<"Plant"> | string | null
   conservationStatus?: Prisma.EnumConservationStatusFilter<"Plant"> | $Enums.ConservationStatus
   description?: Prisma.StringNullableFilter<"Plant"> | string | null
@@ -311,7 +301,6 @@ export type PlantOrderByWithAggregationInput = {
   commonName?: Prisma.SortOrderInput | Prisma.SortOrder
   family?: Prisma.SortOrderInput | Prisma.SortOrder
   genus?: Prisma.SortOrderInput | Prisma.SortOrder
-  species?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.SortOrderInput | Prisma.SortOrder
   conservationStatus?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -334,7 +323,6 @@ export type PlantScalarWhereWithAggregatesInput = {
   commonName?: Prisma.StringNullableWithAggregatesFilter<"Plant"> | string | null
   family?: Prisma.StringNullableWithAggregatesFilter<"Plant"> | string | null
   genus?: Prisma.StringNullableWithAggregatesFilter<"Plant"> | string | null
-  species?: Prisma.StringNullableWithAggregatesFilter<"Plant"> | string | null
   author?: Prisma.StringNullableWithAggregatesFilter<"Plant"> | string | null
   conservationStatus?: Prisma.EnumConservationStatusWithAggregatesFilter<"Plant"> | $Enums.ConservationStatus
   description?: Prisma.StringNullableWithAggregatesFilter<"Plant"> | string | null
@@ -351,7 +339,6 @@ export type PlantCreateInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -371,7 +358,6 @@ export type PlantUncheckedCreateInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -391,7 +377,6 @@ export type PlantUpdateInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -411,7 +396,6 @@ export type PlantUncheckedUpdateInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -431,7 +415,6 @@ export type PlantCreateManyInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -448,7 +431,6 @@ export type PlantUpdateManyMutationInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -464,7 +446,6 @@ export type PlantUncheckedUpdateManyInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -491,7 +472,6 @@ export type PlantCountOrderByAggregateInput = {
   commonName?: Prisma.SortOrder
   family?: Prisma.SortOrder
   genus?: Prisma.SortOrder
-  species?: Prisma.SortOrder
   author?: Prisma.SortOrder
   conservationStatus?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -508,7 +488,6 @@ export type PlantMaxOrderByAggregateInput = {
   commonName?: Prisma.SortOrder
   family?: Prisma.SortOrder
   genus?: Prisma.SortOrder
-  species?: Prisma.SortOrder
   author?: Prisma.SortOrder
   conservationStatus?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -525,7 +504,6 @@ export type PlantMinOrderByAggregateInput = {
   commonName?: Prisma.SortOrder
   family?: Prisma.SortOrder
   genus?: Prisma.SortOrder
-  species?: Prisma.SortOrder
   author?: Prisma.SortOrder
   conservationStatus?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -639,7 +617,6 @@ export type PlantCreateWithoutCreatedByInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -658,7 +635,6 @@ export type PlantUncheckedCreateWithoutCreatedByInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -706,7 +682,6 @@ export type PlantScalarWhereInput = {
   commonName?: Prisma.StringNullableFilter<"Plant"> | string | null
   family?: Prisma.StringNullableFilter<"Plant"> | string | null
   genus?: Prisma.StringNullableFilter<"Plant"> | string | null
-  species?: Prisma.StringNullableFilter<"Plant"> | string | null
   author?: Prisma.StringNullableFilter<"Plant"> | string | null
   conservationStatus?: Prisma.EnumConservationStatusFilter<"Plant"> | $Enums.ConservationStatus
   description?: Prisma.StringNullableFilter<"Plant"> | string | null
@@ -723,7 +698,6 @@ export type PlantCreateWithoutPlantRegionsInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -742,7 +716,6 @@ export type PlantUncheckedCreateWithoutPlantRegionsInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -777,7 +750,6 @@ export type PlantUpdateWithoutPlantRegionsInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -796,7 +768,6 @@ export type PlantUncheckedUpdateWithoutPlantRegionsInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -815,7 +786,6 @@ export type PlantCreateWithoutOccurrencesInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -834,7 +804,6 @@ export type PlantUncheckedCreateWithoutOccurrencesInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -869,7 +838,6 @@ export type PlantUpdateWithoutOccurrencesInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -888,7 +856,6 @@ export type PlantUncheckedUpdateWithoutOccurrencesInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -907,7 +874,6 @@ export type PlantCreateWithoutPlantTagsInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -926,7 +892,6 @@ export type PlantUncheckedCreateWithoutPlantTagsInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -961,7 +926,6 @@ export type PlantUpdateWithoutPlantTagsInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -980,7 +944,6 @@ export type PlantUncheckedUpdateWithoutPlantTagsInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -999,7 +962,6 @@ export type PlantCreateManyCreatedByInput = {
   commonName?: string | null
   family?: string | null
   genus?: string | null
-  species?: string | null
   author?: string | null
   conservationStatus?: $Enums.ConservationStatus
   description?: string | null
@@ -1015,7 +977,6 @@ export type PlantUpdateWithoutCreatedByInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1034,7 +995,6 @@ export type PlantUncheckedUpdateWithoutCreatedByInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1053,7 +1013,6 @@ export type PlantUncheckedUpdateManyWithoutCreatedByInput = {
   commonName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   family?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   genus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  species?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   conservationStatus?: Prisma.EnumConservationStatusFieldUpdateOperationsInput | $Enums.ConservationStatus
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1118,7 +1077,6 @@ export type PlantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   commonName?: boolean
   family?: boolean
   genus?: boolean
-  species?: boolean
   author?: boolean
   conservationStatus?: boolean
   description?: boolean
@@ -1140,7 +1098,6 @@ export type PlantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   commonName?: boolean
   family?: boolean
   genus?: boolean
-  species?: boolean
   author?: boolean
   conservationStatus?: boolean
   description?: boolean
@@ -1158,7 +1115,6 @@ export type PlantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   commonName?: boolean
   family?: boolean
   genus?: boolean
-  species?: boolean
   author?: boolean
   conservationStatus?: boolean
   description?: boolean
@@ -1176,7 +1132,6 @@ export type PlantSelectScalar = {
   commonName?: boolean
   family?: boolean
   genus?: boolean
-  species?: boolean
   author?: boolean
   conservationStatus?: boolean
   description?: boolean
@@ -1187,7 +1142,7 @@ export type PlantSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PlantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "scientificName" | "commonName" | "family" | "genus" | "species" | "author" | "conservationStatus" | "description" | "imageUrl" | "externalId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["plant"]>
+export type PlantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "scientificName" | "commonName" | "family" | "genus" | "author" | "conservationStatus" | "description" | "imageUrl" | "externalId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["plant"]>
 export type PlantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.Plant$createdByArgs<ExtArgs>
   occurrences?: boolean | Prisma.Plant$occurrencesArgs<ExtArgs>
@@ -1216,7 +1171,6 @@ export type $PlantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     commonName: string | null
     family: string | null
     genus: string | null
-    species: string | null
     author: string | null
     conservationStatus: $Enums.ConservationStatus
     description: string | null
@@ -1657,7 +1611,6 @@ export interface PlantFieldRefs {
   readonly commonName: Prisma.FieldRef<"Plant", 'String'>
   readonly family: Prisma.FieldRef<"Plant", 'String'>
   readonly genus: Prisma.FieldRef<"Plant", 'String'>
-  readonly species: Prisma.FieldRef<"Plant", 'String'>
   readonly author: Prisma.FieldRef<"Plant", 'String'>
   readonly conservationStatus: Prisma.FieldRef<"Plant", 'ConservationStatus'>
   readonly description: Prisma.FieldRef<"Plant", 'String'>
