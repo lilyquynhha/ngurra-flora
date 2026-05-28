@@ -47,7 +47,6 @@ model Plant {
   commonName         String?            @map("common_name")
   family             String?
   genus              String?
-  species            String?
   author             String?
   conservationStatus ConservationStatus @default(NOT_EVALUATED) @map("conservation_status")
   description        String?
