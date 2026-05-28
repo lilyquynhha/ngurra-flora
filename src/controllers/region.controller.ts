@@ -40,7 +40,6 @@ export const getRegionById = async (
                 id: true,
                 scientificName: true,
                 commonName: true,
-                species: true,
                 conservationStatus: true,
                 description: true,
               },
