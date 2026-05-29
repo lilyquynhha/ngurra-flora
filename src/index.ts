@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import morgan from "morgan";
 
 import authRoutes from "./routes/auth.routes";
 import plantRoutes from "./routes/plant.routes";
@@ -30,6 +31,11 @@ const generalLimiter = rateLimit({
 });
 
 app.use(express.json());
+
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+}
+
 app.use("/auth", authLimiter, authRoutes);
 app.use(generalLimiter);
 app.use("/plants", plantRoutes);
