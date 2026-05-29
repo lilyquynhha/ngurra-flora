@@ -75,7 +75,12 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
     });
 
     res.json({
-      user: { id: user.id, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
       token,
     });
   } catch (err) {
