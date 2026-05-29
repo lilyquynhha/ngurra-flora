@@ -68,7 +68,6 @@ model Region {
   id          String   @id @default(uuid())
   name        String   @unique
   code        String   @unique
-  description String?
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 

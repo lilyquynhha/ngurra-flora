@@ -60,7 +60,7 @@ describe("GET /regions", () => {
 describe("GET /regions/:id", () => {
   beforeEach(async () => {
     const region = await prisma.region.create({
-      data: { name: "Queensland", code: "QLD", description: "North-eastern Australia" },
+      data: { name: "Queensland", code: "QLD" },
     });
     regionId = region.id;
   });
@@ -86,7 +86,7 @@ describe("POST /regions", () => {
     const res = await request
       .post("/regions")
       .set("Authorization", `Bearer ${adminToken}`)
-      .send({ name: "Queensland", code: "qld", description: "North-eastern Australia" });
+      .send({ name: "Queensland", code: "qld" });
 
     expect(res.status).toBe(201);
     expect(res.body.data.name).toBe("Queensland");
@@ -163,21 +163,6 @@ describe("PATCH /regions/:id", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.data.name).toBe("Updated Queensland");
-  });
-
-  it("clears description when null is passed", async () => {
-    await prisma.region.update({
-      where: { id: regionId },
-      data: { description: "Some description" },
-    });
-
-    const res = await request
-      .patch(`/regions/${regionId}`)
-      .set("Authorization", `Bearer ${adminToken}`)
-      .send({ description: null });
-
-    expect(res.status).toBe(200);
-    expect(res.body.data.description).toBeNull();
   });
 
   it("returns 404 for unknown ID", async () => {

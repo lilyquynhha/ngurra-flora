@@ -28,7 +28,6 @@ export type RegionMinAggregateOutputType = {
   id: string | null
   name: string | null
   code: string | null
-  description: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -37,7 +36,6 @@ export type RegionMaxAggregateOutputType = {
   id: string | null
   name: string | null
   code: string | null
-  description: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -46,7 +44,6 @@ export type RegionCountAggregateOutputType = {
   id: number
   name: number
   code: number
-  description: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -57,7 +54,6 @@ export type RegionMinAggregateInputType = {
   id?: true
   name?: true
   code?: true
-  description?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -66,7 +62,6 @@ export type RegionMaxAggregateInputType = {
   id?: true
   name?: true
   code?: true
-  description?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -75,7 +70,6 @@ export type RegionCountAggregateInputType = {
   id?: true
   name?: true
   code?: true
-  description?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -157,7 +151,6 @@ export type RegionGroupByOutputType = {
   id: string
   name: string
   code: string
-  description: string | null
   createdAt: Date
   updatedAt: Date
   _count: RegionCountAggregateOutputType | null
@@ -187,7 +180,6 @@ export type RegionWhereInput = {
   id?: Prisma.StringFilter<"Region"> | string
   name?: Prisma.StringFilter<"Region"> | string
   code?: Prisma.StringFilter<"Region"> | string
-  description?: Prisma.StringNullableFilter<"Region"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Region"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Region"> | Date | string
   plantRegions?: Prisma.PlantRegionListRelationFilter
@@ -198,7 +190,6 @@ export type RegionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   plantRegions?: Prisma.PlantRegionOrderByRelationAggregateInput
@@ -212,7 +203,6 @@ export type RegionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.RegionWhereInput | Prisma.RegionWhereInput[]
   OR?: Prisma.RegionWhereInput[]
   NOT?: Prisma.RegionWhereInput | Prisma.RegionWhereInput[]
-  description?: Prisma.StringNullableFilter<"Region"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Region"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Region"> | Date | string
   plantRegions?: Prisma.PlantRegionListRelationFilter
@@ -223,7 +213,6 @@ export type RegionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.RegionCountOrderByAggregateInput
@@ -238,7 +227,6 @@ export type RegionScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Region"> | string
   name?: Prisma.StringWithAggregatesFilter<"Region"> | string
   code?: Prisma.StringWithAggregatesFilter<"Region"> | string
-  description?: Prisma.StringNullableWithAggregatesFilter<"Region"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Region"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Region"> | Date | string
 }
@@ -247,7 +235,6 @@ export type RegionCreateInput = {
   id?: string
   name: string
   code: string
-  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   plantRegions?: Prisma.PlantRegionCreateNestedManyWithoutRegionInput
@@ -258,7 +245,6 @@ export type RegionUncheckedCreateInput = {
   id?: string
   name: string
   code: string
-  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   plantRegions?: Prisma.PlantRegionUncheckedCreateNestedManyWithoutRegionInput
@@ -269,7 +255,6 @@ export type RegionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plantRegions?: Prisma.PlantRegionUpdateManyWithoutRegionNestedInput
@@ -280,7 +265,6 @@ export type RegionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plantRegions?: Prisma.PlantRegionUncheckedUpdateManyWithoutRegionNestedInput
@@ -291,7 +275,6 @@ export type RegionCreateManyInput = {
   id?: string
   name: string
   code: string
-  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -300,7 +283,6 @@ export type RegionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -309,7 +291,6 @@ export type RegionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -318,7 +299,6 @@ export type RegionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
-  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -327,7 +307,6 @@ export type RegionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
-  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -336,7 +315,6 @@ export type RegionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
-  description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -385,7 +363,6 @@ export type RegionCreateWithoutPlantRegionsInput = {
   id?: string
   name: string
   code: string
-  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   occurrences?: Prisma.OccurrenceCreateNestedManyWithoutRegionInput
@@ -395,7 +372,6 @@ export type RegionUncheckedCreateWithoutPlantRegionsInput = {
   id?: string
   name: string
   code: string
-  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   occurrences?: Prisma.OccurrenceUncheckedCreateNestedManyWithoutRegionInput
@@ -421,7 +397,6 @@ export type RegionUpdateWithoutPlantRegionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   occurrences?: Prisma.OccurrenceUpdateManyWithoutRegionNestedInput
@@ -431,7 +406,6 @@ export type RegionUncheckedUpdateWithoutPlantRegionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   occurrences?: Prisma.OccurrenceUncheckedUpdateManyWithoutRegionNestedInput
@@ -441,7 +415,6 @@ export type RegionCreateWithoutOccurrencesInput = {
   id?: string
   name: string
   code: string
-  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   plantRegions?: Prisma.PlantRegionCreateNestedManyWithoutRegionInput
@@ -451,7 +424,6 @@ export type RegionUncheckedCreateWithoutOccurrencesInput = {
   id?: string
   name: string
   code: string
-  description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   plantRegions?: Prisma.PlantRegionUncheckedCreateNestedManyWithoutRegionInput
@@ -477,7 +449,6 @@ export type RegionUpdateWithoutOccurrencesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plantRegions?: Prisma.PlantRegionUpdateManyWithoutRegionNestedInput
@@ -487,7 +458,6 @@ export type RegionUncheckedUpdateWithoutOccurrencesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plantRegions?: Prisma.PlantRegionUncheckedUpdateManyWithoutRegionNestedInput
@@ -537,7 +507,6 @@ export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   id?: boolean
   name?: boolean
   code?: boolean
-  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   plantRegions?: boolean | Prisma.Region$plantRegionsArgs<ExtArgs>
@@ -549,7 +518,6 @@ export type RegionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   name?: boolean
   code?: boolean
-  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["region"]>
@@ -558,7 +526,6 @@ export type RegionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   name?: boolean
   code?: boolean
-  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["region"]>
@@ -567,12 +534,11 @@ export type RegionSelectScalar = {
   id?: boolean
   name?: boolean
   code?: boolean
-  description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RegionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["region"]>
+export type RegionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code" | "createdAt" | "updatedAt", ExtArgs["result"]["region"]>
 export type RegionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   plantRegions?: boolean | Prisma.Region$plantRegionsArgs<ExtArgs>
   occurrences?: boolean | Prisma.Region$occurrencesArgs<ExtArgs>
@@ -591,7 +557,6 @@ export type $RegionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     id: string
     name: string
     code: string
-    description: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["region"]>
@@ -1022,7 +987,6 @@ export interface RegionFieldRefs {
   readonly id: Prisma.FieldRef<"Region", 'String'>
   readonly name: Prisma.FieldRef<"Region", 'String'>
   readonly code: Prisma.FieldRef<"Region", 'String'>
-  readonly description: Prisma.FieldRef<"Region", 'String'>
   readonly createdAt: Prisma.FieldRef<"Region", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Region", 'DateTime'>
 }

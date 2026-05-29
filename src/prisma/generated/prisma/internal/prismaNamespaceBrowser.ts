@@ -111,7 +111,6 @@ export const RegionScalarFieldEnum = {
   id: 'id',
   name: 'name',
   code: 'code',
-  description: 'description',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

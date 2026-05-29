@@ -41,7 +41,6 @@ export const getRegionById = async (
                 scientificName: true,
                 commonName: true,
                 conservationStatus: true,
-                description: true,
               },
             },
           },
@@ -74,7 +73,7 @@ export const createRegion = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { name, code, description } = req.body;
+    const { name, code } = req.body;
 
     if (!name || !code) {
       res.status(400).json({ error: "Name and code are required" });
@@ -82,7 +81,7 @@ export const createRegion = async (
     }
 
     const region = await prisma.region.create({
-      data: { name, code: code.toUpperCase(), description },
+      data: { name, code: code.toUpperCase() },
     });
 
     res.status(201).json({ data: region });
@@ -103,14 +102,13 @@ export const updateRegion = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { name, code, description } = req.body;
+    const { name, code } = req.body;
 
     const region = await prisma.region.update({
       where: { id: id as string },
       data: {
         ...(name && { name }),
         ...(code && { code: code.toUpperCase() }),
-        ...(description !== undefined && { description }),
       },
     });
 
