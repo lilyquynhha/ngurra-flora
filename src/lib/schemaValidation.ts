@@ -53,6 +53,7 @@ export const CreatePlantSchema = z.object({
   imageUrl: z.url("Must be a valid URL").optional(),
   externalId: z.string().optional(),
   regionIds: z.array(z.uuid()).optional(),
+  tagIds: z.array(z.uuid()).optional(),
 });
 
 export const UpdatePlantSchema = CreatePlantSchema.partial();

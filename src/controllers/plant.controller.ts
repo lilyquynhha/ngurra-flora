@@ -38,32 +38,29 @@ export const getAllPlants = async (
       }),
     };
 
-    const [plants, total] = await prisma.$transaction([
-      prisma.plant.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { scientificName: "asc" },
-        include: {
-          plantRegions: {
-            select: { region: { select: { id: true, name: true, code: true } } },
-          },
-          plantTags: {
-            select: { tag: { select: { id: true, name: true } } },
-          },
-          _count: { select: { occurrences: true } },
+    const plants = await prisma.plant.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { scientificName: "asc" },
+      include: {
+        plantRegions: {
+          select: { region: { select: { id: true, name: true, code: true } } },
         },
-      }),
-      prisma.plant.count({ where }),
-    ]);
+        plantTags: {
+          select: { tag: { select: { id: true, name: true } } },
+        },
+        _count: { select: { occurrences: true } },
+      },
+    });
 
     res.json({
-      total: total,
+      total: plants.length,
       data: plants,
       pagination: {
         page,
         limit,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(plants.length / limit),
       },
     });
   } catch (err) {
@@ -206,7 +203,8 @@ export const createPlant = async (
       description,
       imageUrl,
       externalId,
-      regionIds, // array of region IDs to link
+      regionIds,
+      tagIds,
     } = req.body;
 
     if (!scientificName) {
@@ -226,10 +224,14 @@ export const createPlant = async (
         imageUrl,
         externalId,
         createdById: req.user!.userId,
-        // Link the plant to the specified regions
         ...(regionIds?.length && {
           plantRegions: {
             create: regionIds.map((regionId: string) => ({ regionId })),
+          },
+        }),
+        ...(tagIds?.length && {
+          plantTags: {
+            create: tagIds.map((tagId: string) => ({ tagId })),
           },
         }),
       },
@@ -243,6 +245,10 @@ export const createPlant = async (
   } catch (err: any) {
     if (err.code === "P2002") {
       res.status(409).json({ error: "A plant with the same scientific name already exists" });
+      return;
+    }
+    if (err.code === "P2003") {
+      res.status(400).json({ error: "Invalid region ID(s) or tag ID(s)" });
       return;
     }
     next(err);
@@ -267,30 +273,74 @@ export const updatePlant = async (
       conservationStatus,
       description,
       imageUrl,
+      regionIds,
+      tagIds,
     } = req.body;
 
-    const plant = await prisma.plant.update({
-      where: { id: id as string },
-      data: {
-        ...(scientificName && { scientificName }),
-        ...(commonName !== undefined && { commonName }),
-        ...(family !== undefined && { family }),
-        ...(genus !== undefined && { genus }),
-        ...(author !== undefined && { author }),
-        ...(conservationStatus && { conservationStatus }),
-        ...(description !== undefined && { description }),
-        ...(imageUrl !== undefined && { imageUrl }),
-      },
-      include: {
-        plantRegions: { select: { region: { select: { id: true, name: true, code: true } } } },
-        plantTags: { select: { tag: { select: { id: true, name: true } } } },
-      },
+    const plant = await prisma.$transaction(async (tx) => {
+      await tx.plant.update({
+        where: { id: id as string },
+        data: {
+          ...(scientificName && { scientificName }),
+          ...(commonName !== undefined && { commonName }),
+          ...(family !== undefined && { family }),
+          ...(genus !== undefined && { genus }),
+          ...(author !== undefined && { author }),
+          ...(conservationStatus && { conservationStatus }),
+          ...(description !== undefined && { description }),
+          ...(imageUrl !== undefined && { imageUrl }),
+        },
+      });
+
+      // Replace region associations if regionIds was passed
+      if (regionIds !== undefined) {
+        await tx.plantRegion.deleteMany({ where: { plantId: id as string } });
+
+        if (regionIds.length > 0) {
+          await tx.plantRegion.createMany({
+            data: regionIds.map((regionId: string) => ({
+              plantId: id as string,
+              regionId,
+            })),
+          });
+        }
+      }
+
+      // Replace tag associations if tagIds was passed
+      if (tagIds !== undefined) {
+        await tx.plantTag.deleteMany({ where: { plantId: id as string } });
+
+        if (tagIds.length > 0) {
+          await tx.plantTag.createMany({
+            data: tagIds.map((tagId: string) => ({
+              plantId: id as string,
+              tagId,
+            })),
+          });
+        }
+      }
+
+      return tx.plant.findUnique({
+        where: { id: id as string },
+        include: {
+          plantRegions: {
+            select: { region: { select: { id: true, name: true, code: true } } },
+          },
+          plantTags: {
+            select: { tag: { select: { id: true, name: true } } },
+          },
+        },
+      });
     });
 
     res.json({ data: plant });
   } catch (err: any) {
     if (err.code === "P2025") {
       res.status(404).json({ error: "Plant not found" });
+      return;
+    }
+    if (err.code === "P2003") {
+      res.status(400).json({ error: "Invalid region ID(s) or tag ID(s)" });
       return;
     }
     next(err);

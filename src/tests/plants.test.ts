@@ -77,10 +77,17 @@ describe("POST /plants", () => {
         commonName: "Golden Wattle",
         conservationStatus: "LEAST_CONCERN",
         regionIds: [regionId],
+        tagIds: [tagId],
       });
 
     expect(res.status).toBe(201);
     expect(res.body.data.scientificName).toBe("Acacia pycnantha");
+    expect(res.body.data.plantRegions).toBeInstanceOf(Array);
+    expect(res.body.data.plantRegions.length).toBe(1);
+    expect(res.body.data.plantRegions[0].region.id).toBe(regionId);
+    expect(res.body.data.plantTags).toBeInstanceOf(Array);
+    expect(res.body.data.plantTags.length).toBe(1);
+    expect(res.body.data.plantTags[0].tag.id).toBe(tagId);
     plantId = res.body.data.id;
   });
 
