@@ -26,6 +26,26 @@ export const getAllOccurrences = async (
     const plantId = req.query.plantId as string | undefined;
     const regionId = req.query.regionId as string | undefined;
 
+    // Check plant and region exist
+    if (plantId) {
+      const plant = await prisma.plant.findUnique({
+        where: { id: plantId },
+      });
+      if (!plant) {
+        res.status(404).json({ error: "Plant not found" });
+        return;
+      }
+    }
+    if (regionId) {
+      const region = await prisma.region.findUnique({
+        where: { id: regionId },
+      });
+      if (!region) {
+        res.status(404).json({ error: "Region not found" });
+        return;
+      }
+    }
+
     const where = {
       ...(plantId && { plantId }),
       ...(regionId && { regionId }),
@@ -48,8 +68,16 @@ export const getAllOccurrences = async (
           dataProvider: true,
           externalId: true,
           createdAt: true,
-          plant: { select: { scientificName: true, commonName: true } },
-          region: { select: { name: true, code: true } },
+          plant: {
+            select: {
+              id: true,
+              scientificName: true,
+              commonName: true,
+              family: true,
+              conservationStatus: true,
+            },
+          },
+          region: { select: { id: true, name: true, code: true } },
         },
       }),
       prisma.occurrence.count({ where }),
