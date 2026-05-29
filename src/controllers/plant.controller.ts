@@ -116,6 +116,78 @@ export const getPlantById = async (
   }
 };
 
+// --- Get distinct plants observed near a coordinate
+
+export const getNearbyPlants = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const lat = parseFloat(req.query.lat as string);
+    const lng = parseFloat(req.query.lng as string);
+    const radiusKm = parseFloat(req.query.radius as string) || 50;
+
+    if (isNaN(lat) || isNaN(lng)) {
+      res.status(400).json({ error: "lat and lng are required numeric values" });
+      return;
+    }
+
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      res.status(400).json({ error: "lat must be -90 to 90, lng must be -180 to 180" });
+      return;
+    }
+
+    const radiusMetres = radiusKm * 1000;
+
+    const results: Array<{
+      id: string;
+      scientific_name: string;
+      common_name: string | null;
+      family: string | null;
+      conservation_status: string;
+      occurrence_count: number;
+      nearest_sighting_km: number;
+    }> = await prisma.$queryRaw`
+      SELECT
+        p.id,
+        p.scientific_name,
+        p.common_name,
+        p.family,
+        p.conservation_status,
+        -- count number of occurences per plant
+        COUNT(o.id)::int AS occurrence_count,
+        -- get the closest occurence
+        ROUND(
+          (MIN(ST_Distance(
+            o.location,
+            ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography
+          )) / 1000)::numeric,
+          2
+        ) AS nearest_sighting_km
+      FROM plants p
+      JOIN occurrences o ON o.plant_id = p.id
+      WHERE ST_DWithin(
+        o.location,
+        ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography,
+        ${radiusMetres}
+      )
+      GROUP BY p.id, p.scientific_name, p.common_name, p.family,
+               p.conservation_status
+      ORDER BY nearest_sighting_km ASC
+      LIMIT 30
+    `;
+
+    res.json({
+      total: results.length,
+      data: results,
+      meta: { lat, lng, radiusKm },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // --- Create a new plant
 
 export const createPlant = async (

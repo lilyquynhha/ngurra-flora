@@ -134,6 +134,61 @@ describe("GET /plants/:id", () => {
   });
 });
 
+describe("GET /plants/nearby", () => {
+  beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.plantRegion.deleteMany();
+    await prisma.occurrence.deleteMany();
+    await prisma.plant.deleteMany();
+
+    // Create a plant near the test coordinate
+    const nearRes = await request
+      .post("/plants")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ scientificName: "Near Plant", commonName: "Near" });
+
+    // Create a plant far away
+    const farRes = await request
+      .post("/plants")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ scientificName: "Far Plant", commonName: "Far" });
+
+    const nearPlantId = nearRes.body.data.id;
+    const farPlantId = farRes.body.data.id;
+
+    // Create an occurrence near Sydney (should be within small radius)
+    await request
+      .post("/occurrences")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ plantId: nearPlantId, latitude: -33.865143, longitude: 151.2099 });
+
+    // Create an occurrence in Melbourne (far away)
+    await request
+      .post("/occurrences")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ plantId: farPlantId, latitude: -37.8136, longitude: 144.9631 });
+  });
+
+  it("returns nearby plants within radius", async () => {
+    const res = await request
+      .get("/plants/nearby")
+      .query({ lat: -33.865143, lng: 151.2099, radius: 50 });
+
+    console.log(res.body);
+    expect(res.status).toBe(200);
+    expect(res.body.data).toBeInstanceOf(Array);
+
+    const names = res.body.data.map((p: any) => p.scientific_name);
+    expect(names).toContain("Near Plant");
+    expect(names).not.toContain("Far Plant");
+  });
+
+  it("returns 400 when lat/lng are missing or invalid", async () => {
+    const res = await request.get("/plants/nearby");
+    expect(res.status).toBe(400);
+  });
+});
+
 describe("DELETE /plants/:id", () => {
   beforeEach(async () => {
     await prisma.plantTag.deleteMany();

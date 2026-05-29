@@ -7,6 +7,7 @@ import {
   deletePlant,
   linkPlantToRegion,
   unlinkPlantFromRegion,
+  getNearbyPlants,
 } from "../controllers/plant.controller";
 import { linkPlantToTag, unlinkPlantFromTag } from "../controllers/plant.controller";
 import { authenticate } from "../middleware/authenticate";
@@ -16,6 +17,7 @@ import { CreatePlantSchema, UpdatePlantSchema, validate } from "../lib/schemaVal
 const router = Router();
 
 router.get("/", getAllPlants);
+router.get("/nearby", getNearbyPlants);
 router.get("/:id", getPlantById);
 router.post(
   "/",
