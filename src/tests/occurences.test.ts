@@ -186,7 +186,7 @@ describe("POST /occurrences", () => {
       .send({ latitude: -27.4705, longitude: 153.026 });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe("plantId, latitude and longitude are required");
+    expect(res.body.error).toBe("Validation failed");
   });
 
   it("returns 400 when latitude is missing", async () => {
@@ -213,8 +213,8 @@ describe("POST /occurrences", () => {
       .set("Authorization", `Bearer ${contributorToken}`)
       .send({ plantId: "nonexistent-id", latitude: -27.4705, longitude: 153.026 });
 
-    expect(res.status).toBe(404);
-    expect(res.body.error).toBe("Plant not found");
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Validation failed");
   });
 
   it("returns 409 on duplicate externalId", async () => {
@@ -230,6 +230,52 @@ describe("POST /occurrences", () => {
 
     expect(res.status).toBe(409);
     expect(res.body.error).toBe("An occurrence with that externalId already exists");
+  });
+
+  it("updates an occurrence as CONTRIBUTOR", async () => {
+    const created = await request
+      .post("/occurrences")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ plantId, latitude: -27.4705, longitude: 153.026, basisOfRecord: "OBSERVATION" });
+
+    const res = await request
+      .put(`/occurrences/${created.body.data.id}`)
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ latitude: -33.86, longitude: 151.2, stateProvince: "Queensland" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.latitude).toBe(-33.86);
+    expect(res.body.data.longitude).toBe(151.2);
+    expect(res.body.data.regionId).toBe(regionId);
+  });
+
+  it("returns 400 when plantId is different", async () => {
+    const created = await request
+      .post("/occurrences")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ plantId, latitude: -27.4705, longitude: 153.026 });
+
+    const otherPlant = await request
+      .post("/plants")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ scientificName: "Other Scientific Name", commonName: "Other Common Name" });
+
+    const res = await request
+      .put(`/occurrences/${created.body.data.id}`)
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ plantId: otherPlant.body.data.id, latitude: -33.86, longitude: 151.2 });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Cannot change plantId for an occurrence");
+  });
+
+  it("returns 404 for unknown occurrence id", async () => {
+    const res = await request
+      .put("/occurrences/nonexistent-id")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ latitude: -33.86, longitude: 151.2 });
+
+    expect(res.status).toBe(404);
   });
 
   it("returns 403 for VIEWER role", async () => {

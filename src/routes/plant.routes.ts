@@ -11,13 +11,26 @@ import {
 import { linkPlantToTag, unlinkPlantFromTag } from "../controllers/plant.controller";
 import { authenticate } from "../middleware/authenticate";
 import { requireRole } from "../middleware/requireRole";
+import { CreatePlantSchema, UpdatePlantSchema, validate } from "../lib/schemaValidation";
 
 const router = Router();
 
 router.get("/", getAllPlants);
 router.get("/:id", getPlantById);
-router.post("/", authenticate, requireRole("ADMIN", "CONTRIBUTOR"), createPlant);
-router.patch("/:id", authenticate, requireRole("ADMIN", "CONTRIBUTOR"), updatePlant);
+router.post(
+  "/",
+  authenticate,
+  requireRole("ADMIN", "CONTRIBUTOR"),
+  validate(CreatePlantSchema),
+  createPlant,
+);
+router.patch(
+  "/:id",
+  authenticate,
+  requireRole("ADMIN", "CONTRIBUTOR"),
+  validate(UpdatePlantSchema),
+  updatePlant,
+);
 router.delete("/:id", authenticate, requireRole("ADMIN"), deletePlant);
 
 // Region association

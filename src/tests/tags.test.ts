@@ -134,7 +134,7 @@ describe("POST /tags", () => {
       .send({});
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe("Name is required");
+    expect(res.body.error).toBe("Validation failed");
   });
 
   it("returns 403 for VIEWER role", async () => {

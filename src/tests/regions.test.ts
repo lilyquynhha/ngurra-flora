@@ -115,7 +115,7 @@ describe("POST /regions", () => {
       .send({ code: "QLD" });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe("Name and code are required");
+    expect(res.body.error).toBe("Validation failed");
   });
 
   it("returns 400 when code is missing", async () => {
@@ -125,7 +125,7 @@ describe("POST /regions", () => {
       .send({ name: "Queensland" });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe("Name and code are required");
+    expect(res.body.error).toBe("Validation failed");
   });
 
   it("returns 403 for CONTRIBUTOR role", async () => {

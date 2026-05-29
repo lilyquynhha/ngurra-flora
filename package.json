@@ -22,7 +22,8 @@
     "axios": "^1.16.1",
     "bcryptjs": "^3.0.3",
     "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/axios": "^0.9.36",
