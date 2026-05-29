@@ -297,6 +297,76 @@ export const createOccurrence = async (
   }
 };
 
+// --- Update an occurence (without updating the plant)
+
+export const updateOccurrence = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const {
+      plantId,
+      latitude,
+      longitude,
+      recordedDate,
+      basisOfRecord,
+      dataProvider,
+      externalId,
+      stateProvince,
+    } = req.body;
+
+    const existingOccurrence = await prisma.occurrence.findUnique({ where: { id: id as string } });
+    if (!existingOccurrence) {
+      res.status(404).json({ error: "Occurrence not found" });
+      return;
+    }
+
+    if (plantId !== undefined && plantId !== existingOccurrence.plantId) {
+      res.status(400).json({ error: "Cannot change plantId for an occurrence" });
+      return;
+    }
+
+    const regionId = stateProvince !== undefined ? await resolveRegionId(stateProvince) : undefined;
+
+    const occurrence = await prisma.occurrence.update({
+      where: { id: id as string },
+      data: {
+        ...(latitude !== undefined && { latitude }),
+        ...(longitude !== undefined && { longitude }),
+        ...(recordedDate !== undefined && {
+          recordedDate: recordedDate ? new Date(recordedDate) : null,
+        }),
+        ...(basisOfRecord !== undefined && { basisOfRecord }),
+        ...(dataProvider !== undefined && { dataProvider }),
+        ...(externalId !== undefined && { externalId }),
+        ...(regionId !== undefined && { regionId }),
+      },
+    });
+
+    if (latitude !== undefined || longitude !== undefined) {
+      await prisma.$executeRaw`
+        UPDATE occurrences
+        SET location = ST_SetSRID(ST_MakePoint(${occurrence.longitude}, ${occurrence.latitude}), 4326)::geography
+        WHERE id = ${occurrence.id}
+      `;
+    }
+
+    res.json({ data: occurrence });
+  } catch (err: any) {
+    if (err.code === "P2025") {
+      res.status(404).json({ error: "Occurrence not found" });
+      return;
+    }
+    if (err.code === "P2002") {
+      res.status(409).json({ error: "An occurrence with that externalId already exists" });
+      return;
+    }
+    next(err);
+  }
+};
+
 // --- Delete an occurence
 
 export const deleteOccurrence = async (
