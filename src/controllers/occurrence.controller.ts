@@ -74,6 +74,9 @@ export const getOccurrencesByPlant = async (
 ): Promise<void> => {
   try {
     const { plantId } = req.params;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const skip = (page - 1) * limit;
 
     const plant = await prisma.plant.findUnique({ where: { id: plantId as string } });
     if (!plant) {
@@ -83,6 +86,8 @@ export const getOccurrencesByPlant = async (
 
     const occurrences = await prisma.occurrence.findMany({
       where: { plantId: plantId as string },
+      skip,
+      take: limit,
       orderBy: { recordedDate: "desc" },
       select: {
         id: true,
