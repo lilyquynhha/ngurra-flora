@@ -46,10 +46,10 @@ export const getAllPlants = async (
         orderBy: { scientificName: "asc" },
         include: {
           plantRegions: {
-            include: { region: { select: { id: true, name: true, code: true } } },
+            select: { region: { select: { id: true, name: true, code: true } } },
           },
           plantTags: {
-            include: { tag: { select: { id: true, name: true } } },
+            select: { tag: { select: { id: true, name: true } } },
           },
           _count: { select: { occurrences: true } },
         },
@@ -85,10 +85,10 @@ export const getPlantById = async (
       where: { id: id as string },
       include: {
         plantRegions: {
-          include: { region: { select: { id: true, name: true, code: true } } },
+          select: { region: { select: { id: true, name: true, code: true } } },
         },
         plantTags: {
-          include: { tag: { select: { id: true, name: true } } },
+          select: { tag: { select: { id: true, name: true } } },
         },
         occurrences: {
           take: 10,
@@ -234,8 +234,8 @@ export const createPlant = async (
         }),
       },
       include: {
-        plantRegions: { include: { region: { select: { id: true, name: true, code: true } } } },
-        plantTags: { include: { tag: { select: { id: true, name: true } } } },
+        plantRegions: { select: { region: { select: { id: true, name: true, code: true } } } },
+        plantTags: { select: { tag: { select: { id: true, name: true } } } },
       },
     });
 
@@ -282,8 +282,8 @@ export const updatePlant = async (
         ...(imageUrl !== undefined && { imageUrl }),
       },
       include: {
-        plantRegions: { include: { region: { select: { id: true, name: true, code: true } } } },
-        plantTags: { include: { tag: { select: { id: true, name: true } } } },
+        plantRegions: { select: { region: { select: { id: true, name: true, code: true } } } },
+        plantTags: { select: { tag: { select: { id: true, name: true } } } },
       },
     });
 
