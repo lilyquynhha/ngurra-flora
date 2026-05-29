@@ -84,23 +84,30 @@ export const getOccurrencesByPlant = async (
       return;
     }
 
-    const occurrences = await prisma.occurrence.findMany({
-      where: { plantId: plantId as string },
-      skip,
-      take: limit,
-      orderBy: { recordedDate: "desc" },
-      select: {
-        id: true,
-        latitude: true,
-        longitude: true,
-        recordedDate: true,
-        basisOfRecord: true,
-        dataProvider: true,
-        region: { select: { id: true, name: true, code: true } },
-      },
-    });
+    const [occurrences, total] = await prisma.$transaction([
+      prisma.occurrence.findMany({
+        where: { plantId: plantId as string },
+        skip,
+        take: limit,
+        orderBy: { recordedDate: "desc" },
+        select: {
+          id: true,
+          latitude: true,
+          longitude: true,
+          recordedDate: true,
+          basisOfRecord: true,
+          dataProvider: true,
+          region: { select: { id: true, name: true, code: true } },
+        },
+      }),
+      prisma.occurrence.count({ where: { plantId: plantId as string } }),
+    ]);
 
-    res.json({ data: occurrences });
+    res.json({
+      total,
+      data: occurrences,
+      pagination: { page, limit, totalPages: Math.ceil(total / limit) },
+    });
   } catch (err) {
     next(err);
   }
