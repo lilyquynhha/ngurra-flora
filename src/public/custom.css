@@ -1,0 +1,22 @@
+.swagger-ui .topbar .topbar-wrapper .link svg {
+  display: none;
+}
+
+.swagger-ui .topbar .topbar-wrapper a::before {
+  content: "";
+  display: block;
+  width: 180px;
+  height: 40px;
+  background-image: url("/logo.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: left center;
+}
+
+.swagger-ui .topbar .topbar-wrapper {
+  justify-content: space-between;
+}
+
+.swagger-ui .topbar {
+  background-color: #1a3a2a;
+}

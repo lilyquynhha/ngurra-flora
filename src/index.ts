@@ -38,14 +38,17 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
+app.use(express.static("src/public"));
 app.use(
   "/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
     customSiteTitle: "Ngurra Flora API Docs",
+    customfavIcon: "/favicon.png",
     swaggerOptions: {
       persistAuthorization: true,
     },
+    customCssUrl: "/custom.css",
   }),
 );
 
