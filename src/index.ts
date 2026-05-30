@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./lib/swagger";
 
 import authRoutes from "./routes/auth.routes";
 import plantRoutes from "./routes/plant.routes";
@@ -35,6 +37,21 @@ app.use(express.json());
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: "Ngurra Flora API Docs",
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  }),
+);
+
+app.get("/api-docs.json", (_req, res) => {
+  res.json(swaggerSpec);
+});
 
 app.use("/auth", authLimiter, authRoutes);
 app.use(generalLimiter);

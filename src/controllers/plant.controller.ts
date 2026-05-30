@@ -11,8 +11,13 @@ export const getAllPlants = async (
 ): Promise<void> => {
   try {
     // Get the query params for pagination
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
+    let page = parseInt(req.query.page as string) || 1;
+    let limit = parseInt(req.query.limit as string) || 20;
+    
+    // Validate positive integers
+    if (page < 1 || !Number.isInteger(page)) page = 1;
+    if (limit < 1 || !Number.isInteger(limit)) limit = 20;
+    
     const skip = (page - 1) * limit;
 
     // Get the query params for filtering options
@@ -407,6 +412,24 @@ export const unlinkPlantFromRegion = async (
   try {
     const { id, regionId } = req.params;
 
+    const plant = await prisma.plant.findUnique({
+      where: { id: id as string },
+    });
+
+    if (!plant) {
+      res.status(404).json({ error: "Plant not found" });
+      return;
+    }
+
+    const region = await prisma.region.findUnique({
+      where: { id: regionId as string },
+    });
+
+    if (!region) {
+      res.status(404).json({ error: "Region not found" });
+      return;
+    }
+
     await prisma.plantRegion.delete({
       where: { plantId_regionId: { plantId: id as string, regionId: regionId as string } },
     });
@@ -459,6 +482,24 @@ export const unlinkPlantFromTag = async (
   try {
     const { id, tagId } = req.params;
 
+    const plant = await prisma.plant.findUnique({
+      where: { id: id as string },
+    });
+
+    if (!plant) {
+      res.status(404).json({ error: "Plant not found" });
+      return;
+    }
+
+    const tag = await prisma.tag.findUnique({
+      where: { id: tagId as string },
+    });
+
+    if (!tag) {
+      res.status(404).json({ error: "Tag not found" });
+      return;
+    }
+
     await prisma.plantTag.delete({
       where: { plantId_tagId: { plantId: id as string, tagId: tagId as string } },
     });
@@ -466,7 +507,7 @@ export const unlinkPlantFromTag = async (
     res.status(204).send();
   } catch (err: any) {
     if (err.code === "P2025") {
-      res.status(404).json({ error: "Tag not linked to this plant" });
+      res.status(404).json({ error: "Plant not linked to this tag" });
       return;
     }
     next(err);

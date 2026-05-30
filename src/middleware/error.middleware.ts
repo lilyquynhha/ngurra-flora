@@ -13,9 +13,7 @@ export const errorHandler = (
   const status = err.status || 500;
   const message = err.message || "Internal server error";
 
-  if (process.env.NODE_ENV !== "production") {
-    console.error(err.stack);
-  }
+  console.error(err.stack);
 
   res.status(status).json({ error: message });
 };

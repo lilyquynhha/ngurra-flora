@@ -24,8 +24,13 @@ export const getAllOccurrences = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
+    let page = parseInt(req.query.page as string) || 1;
+    let limit = parseInt(req.query.limit as string) || 20;
+
+    // Validate positive integers
+    if (page < 1 || !Number.isInteger(page)) page = 1;
+    if (limit < 1 || !Number.isInteger(limit)) limit = 20;
+
     const skip = (page - 1) * limit;
     const plantId = req.query.plantId as string | undefined;
     const regionId = req.query.regionId as string | undefined;
@@ -104,8 +109,13 @@ export const getOccurrencesByPlant = async (
 ): Promise<void> => {
   try {
     const { plantId } = req.params;
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
+    let page = parseInt(req.query.page as string) || 1;
+    let limit = parseInt(req.query.limit as string) || 20;
+
+    // Validate positive integers
+    if (page < 1 || !Number.isInteger(page)) page = 1;
+    if (limit < 1 || !Number.isInteger(limit)) limit = 20;
+
     const skip = (page - 1) * limit;
 
     const plant = await prisma.plant.findUnique({ where: { id: plantId as string } });
@@ -245,9 +255,7 @@ export const getNearbyOccurrences = async (
         family: r.family,
         conservationStatus: r.conservation_status ?? null,
       },
-      region: r.region_id
-        ? { id: r.region_id, name: r.name ?? null, code: r.code ?? null }
-        : null,
+      region: r.region_id ? { id: r.region_id, name: r.name ?? null, code: r.code ?? null } : null,
       latitude: r.latitude,
       longitude: r.longitude,
       recordedDate: r.recorded_date ?? null,

@@ -42,8 +42,8 @@ export const getTagById = async (
                 id: true,
                 scientificName: true,
                 commonName: true,
+                family: true,
                 conservationStatus: true,
-                description: true,
               },
             },
           },
@@ -87,6 +87,34 @@ export const createTag = async (req: Request, res: Response, next: NextFunction)
   } catch (err: any) {
     if (err.code === "P2002") {
       res.status(409).json({ error: "Tag already exists" });
+      return;
+    }
+    next(err);
+  }
+};
+
+// --- Update an existing tag
+
+export const updateTag = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const tag = await prisma.tag.update({
+      where: { id: id as string },
+      data: {
+        ...(name && { name }),
+      },
+    });
+
+    res.json({ data: tag });
+  } catch (err: any) {
+    if (err.code === "P2025") {
+      res.status(404).json({ error: "Tag not found" });
+      return;
+    }
+    if (err.code == "P2002") {
+      res.status(409).json({ error: "Another tag with the same name already exists" });
       return;
     }
     next(err);

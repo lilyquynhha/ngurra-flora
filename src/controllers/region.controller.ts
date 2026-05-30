@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import prisma from "../lib/prisma";
 
 // --- Get all regions
+
 export const getAllRegions = async (
   _req: Request,
   res: Response,
@@ -40,6 +41,7 @@ export const getRegionById = async (
                 id: true,
                 scientificName: true,
                 commonName: true,
+                family: true,
                 conservationStatus: true,
               },
             },
@@ -58,6 +60,7 @@ export const getRegionById = async (
     res.json({
       data: {
         ...regionData,
+        plantsCount: plantRegions.length,
         plants: plantRegions.map((pr) => pr.plant),
       },
     });
@@ -67,6 +70,7 @@ export const getRegionById = async (
 };
 
 // --- Create a new region
+
 export const createRegion = async (
   req: Request,
   res: Response,
@@ -95,6 +99,7 @@ export const createRegion = async (
 };
 
 // --- Update an existing region
+
 export const updateRegion = async (
   req: Request,
   res: Response,
@@ -118,11 +123,16 @@ export const updateRegion = async (
       res.status(404).json({ error: "Region not found" });
       return;
     }
+    if (err.code == "P2002") {
+      res.status(409).json({ error: "Another region with the same name already exists" });
+      return;
+    }
     next(err);
   }
 };
 
 // --- Delete an existing region
+
 export const deleteRegion = async (
   req: Request,
   res: Response,
