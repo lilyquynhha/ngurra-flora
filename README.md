@@ -117,7 +117,6 @@ npm test
 - **Validation**: Zod
 - **API documentation**: Swagger UI (`swagger-jsdoc` + `swagger-ui-express`)
 - **Testing**: Vitest + Supertest
-- **HTTP security**: Helmet
 - **Rate limiting**: express-rate-limit
 - **Logging**: Morgan
 - **Code formatting**: Prettier
