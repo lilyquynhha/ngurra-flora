@@ -1027,7 +1027,8 @@ export const OccurrenceScalarFieldEnum = {
   basisOfRecord: 'basisOfRecord',
   dataProvider: 'dataProvider',
   externalId: 'externalId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type OccurrenceScalarFieldEnum = (typeof OccurrenceScalarFieldEnum)[keyof typeof OccurrenceScalarFieldEnum]
@@ -1036,7 +1037,8 @@ export type OccurrenceScalarFieldEnum = (typeof OccurrenceScalarFieldEnum)[keyof
 export const TagScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]

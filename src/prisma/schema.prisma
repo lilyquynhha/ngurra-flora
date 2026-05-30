@@ -65,11 +65,11 @@ model Plant {
 }
 
 model Region {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  code        String   @unique
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(uuid())
+  name      String   @unique
+  code      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   plantRegions PlantRegion[]
   occurrences  Occurrence[]
@@ -101,6 +101,7 @@ model Occurrence {
   externalId    String?                                @unique @map("external_id")
   location      Unsupported("geography(Point, 4326)")?
   createdAt     DateTime                               @default(now()) @map("created_at")
+  updatedAt     DateTime                               @updatedAt @map("updated_at")
 
   @@map("occurrences")
 }
@@ -109,6 +110,7 @@ model Tag {
   id        String   @id @default(uuid())
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   plantTags PlantTag[]
 

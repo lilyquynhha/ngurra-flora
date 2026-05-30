@@ -47,6 +47,7 @@ export type OccurrenceMinAggregateOutputType = {
   dataProvider: string | null
   externalId: string | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type OccurrenceMaxAggregateOutputType = {
@@ -60,6 +61,7 @@ export type OccurrenceMaxAggregateOutputType = {
   dataProvider: string | null
   externalId: string | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type OccurrenceCountAggregateOutputType = {
@@ -73,6 +75,7 @@ export type OccurrenceCountAggregateOutputType = {
   dataProvider: number
   externalId: number
   createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -98,6 +101,7 @@ export type OccurrenceMinAggregateInputType = {
   dataProvider?: true
   externalId?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type OccurrenceMaxAggregateInputType = {
@@ -111,6 +115,7 @@ export type OccurrenceMaxAggregateInputType = {
   dataProvider?: true
   externalId?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type OccurrenceCountAggregateInputType = {
@@ -124,6 +129,7 @@ export type OccurrenceCountAggregateInputType = {
   dataProvider?: true
   externalId?: true
   createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -224,6 +230,7 @@ export type OccurrenceGroupByOutputType = {
   dataProvider: string | null
   externalId: string | null
   createdAt: Date
+  updatedAt: Date
   _count: OccurrenceCountAggregateOutputType | null
   _avg: OccurrenceAvgAggregateOutputType | null
   _sum: OccurrenceSumAggregateOutputType | null
@@ -260,6 +267,7 @@ export type OccurrenceWhereInput = {
   dataProvider?: Prisma.StringNullableFilter<"Occurrence"> | string | null
   externalId?: Prisma.StringNullableFilter<"Occurrence"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Occurrence"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Occurrence"> | Date | string
   plant?: Prisma.XOR<Prisma.PlantScalarRelationFilter, Prisma.PlantWhereInput>
   region?: Prisma.XOR<Prisma.RegionNullableScalarRelationFilter, Prisma.RegionWhereInput> | null
 }
@@ -275,6 +283,7 @@ export type OccurrenceOrderByWithRelationInput = {
   dataProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   externalId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   plant?: Prisma.PlantOrderByWithRelationInput
   region?: Prisma.RegionOrderByWithRelationInput
 }
@@ -293,6 +302,7 @@ export type OccurrenceWhereUniqueInput = Prisma.AtLeast<{
   basisOfRecord?: Prisma.StringNullableFilter<"Occurrence"> | string | null
   dataProvider?: Prisma.StringNullableFilter<"Occurrence"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Occurrence"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Occurrence"> | Date | string
   plant?: Prisma.XOR<Prisma.PlantScalarRelationFilter, Prisma.PlantWhereInput>
   region?: Prisma.XOR<Prisma.RegionNullableScalarRelationFilter, Prisma.RegionWhereInput> | null
 }, "id" | "externalId">
@@ -308,6 +318,7 @@ export type OccurrenceOrderByWithAggregationInput = {
   dataProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   externalId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.OccurrenceCountOrderByAggregateInput
   _avg?: Prisma.OccurrenceAvgOrderByAggregateInput
   _max?: Prisma.OccurrenceMaxOrderByAggregateInput
@@ -329,6 +340,7 @@ export type OccurrenceScalarWhereWithAggregatesInput = {
   dataProvider?: Prisma.StringNullableWithAggregatesFilter<"Occurrence"> | string | null
   externalId?: Prisma.StringNullableWithAggregatesFilter<"Occurrence"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Occurrence"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Occurrence"> | Date | string
 }
 
 export type OccurrenceCreateInput = {
@@ -340,6 +352,7 @@ export type OccurrenceCreateInput = {
   dataProvider?: string | null
   externalId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
   plant: Prisma.PlantCreateNestedOneWithoutOccurrencesInput
   region?: Prisma.RegionCreateNestedOneWithoutOccurrencesInput
 }
@@ -355,6 +368,7 @@ export type OccurrenceUncheckedCreateInput = {
   dataProvider?: string | null
   externalId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type OccurrenceUpdateInput = {
@@ -366,6 +380,7 @@ export type OccurrenceUpdateInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plant?: Prisma.PlantUpdateOneRequiredWithoutOccurrencesNestedInput
   region?: Prisma.RegionUpdateOneWithoutOccurrencesNestedInput
 }
@@ -381,6 +396,7 @@ export type OccurrenceUncheckedUpdateInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OccurrenceCreateManyInput = {
@@ -394,6 +410,7 @@ export type OccurrenceCreateManyInput = {
   dataProvider?: string | null
   externalId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type OccurrenceUpdateManyMutationInput = {
@@ -405,6 +422,7 @@ export type OccurrenceUpdateManyMutationInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OccurrenceUncheckedUpdateManyInput = {
@@ -418,6 +436,7 @@ export type OccurrenceUncheckedUpdateManyInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OccurrenceListRelationFilter = {
@@ -441,6 +460,7 @@ export type OccurrenceCountOrderByAggregateInput = {
   dataProvider?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type OccurrenceAvgOrderByAggregateInput = {
@@ -459,6 +479,7 @@ export type OccurrenceMaxOrderByAggregateInput = {
   dataProvider?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type OccurrenceMinOrderByAggregateInput = {
@@ -472,6 +493,7 @@ export type OccurrenceMinOrderByAggregateInput = {
   dataProvider?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type OccurrenceSumOrderByAggregateInput = {
@@ -584,6 +606,7 @@ export type OccurrenceCreateWithoutPlantInput = {
   dataProvider?: string | null
   externalId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
   region?: Prisma.RegionCreateNestedOneWithoutOccurrencesInput
 }
 
@@ -597,6 +620,7 @@ export type OccurrenceUncheckedCreateWithoutPlantInput = {
   dataProvider?: string | null
   externalId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type OccurrenceCreateOrConnectWithoutPlantInput = {
@@ -639,6 +663,7 @@ export type OccurrenceScalarWhereInput = {
   dataProvider?: Prisma.StringNullableFilter<"Occurrence"> | string | null
   externalId?: Prisma.StringNullableFilter<"Occurrence"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Occurrence"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Occurrence"> | Date | string
 }
 
 export type OccurrenceCreateWithoutRegionInput = {
@@ -650,6 +675,7 @@ export type OccurrenceCreateWithoutRegionInput = {
   dataProvider?: string | null
   externalId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
   plant: Prisma.PlantCreateNestedOneWithoutOccurrencesInput
 }
 
@@ -663,6 +689,7 @@ export type OccurrenceUncheckedCreateWithoutRegionInput = {
   dataProvider?: string | null
   externalId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type OccurrenceCreateOrConnectWithoutRegionInput = {
@@ -701,6 +728,7 @@ export type OccurrenceCreateManyPlantInput = {
   dataProvider?: string | null
   externalId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type OccurrenceUpdateWithoutPlantInput = {
@@ -712,6 +740,7 @@ export type OccurrenceUpdateWithoutPlantInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   region?: Prisma.RegionUpdateOneWithoutOccurrencesNestedInput
 }
 
@@ -725,6 +754,7 @@ export type OccurrenceUncheckedUpdateWithoutPlantInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OccurrenceUncheckedUpdateManyWithoutPlantInput = {
@@ -737,6 +767,7 @@ export type OccurrenceUncheckedUpdateManyWithoutPlantInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OccurrenceCreateManyRegionInput = {
@@ -749,6 +780,7 @@ export type OccurrenceCreateManyRegionInput = {
   dataProvider?: string | null
   externalId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type OccurrenceUpdateWithoutRegionInput = {
@@ -760,6 +792,7 @@ export type OccurrenceUpdateWithoutRegionInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plant?: Prisma.PlantUpdateOneRequiredWithoutOccurrencesNestedInput
 }
 
@@ -773,6 +806,7 @@ export type OccurrenceUncheckedUpdateWithoutRegionInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OccurrenceUncheckedUpdateManyWithoutRegionInput = {
@@ -785,6 +819,7 @@ export type OccurrenceUncheckedUpdateManyWithoutRegionInput = {
   dataProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -800,6 +835,7 @@ export type OccurrenceSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   dataProvider?: boolean
   externalId?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   plant?: boolean | Prisma.PlantDefaultArgs<ExtArgs>
   region?: boolean | Prisma.Occurrence$regionArgs<ExtArgs>
 }, ExtArgs["result"]["occurrence"]>
@@ -815,6 +851,7 @@ export type OccurrenceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   dataProvider?: boolean
   externalId?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   plant?: boolean | Prisma.PlantDefaultArgs<ExtArgs>
   region?: boolean | Prisma.Occurrence$regionArgs<ExtArgs>
 }, ExtArgs["result"]["occurrence"]>
@@ -830,6 +867,7 @@ export type OccurrenceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   dataProvider?: boolean
   externalId?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   plant?: boolean | Prisma.PlantDefaultArgs<ExtArgs>
   region?: boolean | Prisma.Occurrence$regionArgs<ExtArgs>
 }, ExtArgs["result"]["occurrence"]>
@@ -845,9 +883,10 @@ export type OccurrenceSelectScalar = {
   dataProvider?: boolean
   externalId?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type OccurrenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "plantId" | "regionId" | "latitude" | "longitude" | "recordedDate" | "basisOfRecord" | "dataProvider" | "externalId" | "createdAt", ExtArgs["result"]["occurrence"]>
+export type OccurrenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "plantId" | "regionId" | "latitude" | "longitude" | "recordedDate" | "basisOfRecord" | "dataProvider" | "externalId" | "createdAt" | "updatedAt", ExtArgs["result"]["occurrence"]>
 export type OccurrenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   plant?: boolean | Prisma.PlantDefaultArgs<ExtArgs>
   region?: boolean | Prisma.Occurrence$regionArgs<ExtArgs>
@@ -878,6 +917,7 @@ export type $OccurrencePayload<ExtArgs extends runtime.Types.Extensions.Internal
     dataProvider: string | null
     externalId: string | null
     createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["occurrence"]>
   composites: {}
 }
@@ -1313,6 +1353,7 @@ export interface OccurrenceFieldRefs {
   readonly dataProvider: Prisma.FieldRef<"Occurrence", 'String'>
   readonly externalId: Prisma.FieldRef<"Occurrence", 'String'>
   readonly createdAt: Prisma.FieldRef<"Occurrence", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Occurrence", 'DateTime'>
 }
     
 
