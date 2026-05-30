@@ -73,7 +73,7 @@ export const CreateOccurrenceSchema = z.object({
   basisOfRecord: z.string().optional(),
   dataProvider: z.string().optional(),
   externalId: z.string().optional(),
-  stateProvince: z.string().optional(),
+  regionCode: z.string().optional(),
 });
 
 export const UpdateOccurenceSchema = CreateOccurrenceSchema.partial();
@@ -81,3 +81,5 @@ export const UpdateOccurenceSchema = CreateOccurrenceSchema.partial();
 export const CreateTagSchema = z.object({
   name: z.string().min(1, "Name is required"),
 });
+
+export const UpdateTagSchema = CreateTagSchema.partial();

@@ -1,15 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import prisma from "../lib/prisma";
 
-// --- Helper: match regionId from stateProvince
-const resolveRegionId = async (stateProvince: string | undefined): Promise<string | null> => {
-  if (!stateProvince) return null;
+// --- Helper: match regionId from regionCode
+const resolveRegionId = async (regionCode: string | undefined): Promise<string | null> => {
+  if (!regionCode) return null;
 
   const region = await prisma.region.findFirst({
-    where: { name: { equals: stateProvince, mode: "insensitive" } },
+    where: { code: { equals: regionCode, mode: "insensitive" } },
   });
 
-  return region?.id ?? null;
+  if (!region) {
+    throw new Error("Region not found");
+  }
+
+  return region.id;
 };
 
 // --- Get all occurences with pagination and filtering options
@@ -59,15 +63,6 @@ export const getAllOccurrences = async (
         orderBy: { recordedDate: "desc" },
         select: {
           id: true,
-          plantId: true,
-          regionId: true,
-          latitude: true,
-          longitude: true,
-          recordedDate: true,
-          basisOfRecord: true,
-          dataProvider: true,
-          externalId: true,
-          createdAt: true,
           plant: {
             select: {
               id: true,
@@ -78,6 +73,13 @@ export const getAllOccurrences = async (
             },
           },
           region: { select: { id: true, name: true, code: true } },
+          latitude: true,
+          longitude: true,
+          recordedDate: true,
+          basisOfRecord: true,
+          dataProvider: true,
+          externalId: true,
+          createdAt: true,
         },
       }),
       prisma.occurrence.count({ where }),
@@ -290,7 +292,7 @@ export const createOccurrence = async (
       basisOfRecord,
       dataProvider,
       externalId,
-      stateProvince,
+      regionCode,
     } = req.body;
 
     if (!plantId || latitude === undefined || longitude === undefined) {
@@ -304,7 +306,13 @@ export const createOccurrence = async (
       return;
     }
 
-    const regionId = await resolveRegionId(stateProvince);
+    let regionId: string | null = null;
+    try {
+      regionId = await resolveRegionId(regionCode);
+    } catch (err) {
+      res.status(404).json({ error: "Region not found" });
+      return;
+    }
 
     // 1 - create the row (all fields except location)
     const occurrence = await prisma.occurrence.create({
@@ -327,7 +335,32 @@ export const createOccurrence = async (
       WHERE id = ${occurrence.id}
     `;
 
-    res.status(201).json({ data: occurrence });
+    // 3 - fetch the full occurrence with plant and region data
+    const fullOccurrence = await prisma.occurrence.findUnique({
+      where: { id: occurrence.id },
+      select: {
+        id: true,
+        plant: {
+          select: {
+            id: true,
+            scientificName: true,
+            commonName: true,
+            family: true,
+            conservationStatus: true,
+          },
+        },
+        region: { select: { id: true, name: true, code: true } },
+        latitude: true,
+        longitude: true,
+        recordedDate: true,
+        basisOfRecord: true,
+        dataProvider: true,
+        externalId: true,
+        createdAt: true,
+      },
+    });
+
+    res.status(201).json({ data: fullOccurrence });
   } catch (err: any) {
     if (err.code === "P2002") {
       res.status(409).json({ error: "An occurrence with that externalId already exists" });
@@ -354,7 +387,7 @@ export const updateOccurrence = async (
       basisOfRecord,
       dataProvider,
       externalId,
-      stateProvince,
+      regionCode,
     } = req.body;
 
     const existingOccurrence = await prisma.occurrence.findUnique({ where: { id: id as string } });
@@ -368,7 +401,15 @@ export const updateOccurrence = async (
       return;
     }
 
-    const regionId = stateProvince !== undefined ? await resolveRegionId(stateProvince) : undefined;
+    let regionId: string | null | undefined = undefined;
+    if (regionCode !== undefined) {
+      try {
+        regionId = await resolveRegionId(regionCode);
+      } catch (err) {
+        res.status(404).json({ error: "Region not found" });
+        return;
+      }
+    }
 
     const occurrence = await prisma.occurrence.update({
       where: { id: id as string },
@@ -393,7 +434,32 @@ export const updateOccurrence = async (
       `;
     }
 
-    res.json({ data: occurrence });
+    // Fetch the full occurrence with plant and region data
+    const fullOccurrence = await prisma.occurrence.findUnique({
+      where: { id: occurrence.id },
+      select: {
+        id: true,
+        plant: {
+          select: {
+            id: true,
+            scientificName: true,
+            commonName: true,
+            family: true,
+            conservationStatus: true,
+          },
+        },
+        region: { select: { id: true, name: true, code: true } },
+        latitude: true,
+        longitude: true,
+        recordedDate: true,
+        basisOfRecord: true,
+        dataProvider: true,
+        externalId: true,
+        createdAt: true,
+      },
+    });
+
+    res.json({ data: fullOccurrence });
   } catch (err: any) {
     if (err.code === "P2025") {
       res.status(404).json({ error: "Occurrence not found" });

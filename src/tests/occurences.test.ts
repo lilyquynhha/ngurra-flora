@@ -80,7 +80,7 @@ describe("GET /occurrences", () => {
       plantId,
       latitude: -27.4705,
       longitude: 153.026,
-      stateProvince: "Queensland",
+      regionCode: "Queensland",
     });
 
     const res = await request.get("/occurrences");
@@ -98,18 +98,18 @@ describe("GET /occurrences", () => {
 
     const res = await request.get(`/occurrences?plantId=${plantId}`);
     expect(res.status).toBe(200);
-    expect(res.body.data.every((o: any) => o.plantId === plantId)).toBe(true);
+    expect(res.body.data.every((o: any) => o.plant.id === plantId)).toBe(true);
   });
 
   it("filters by regionId", async () => {
     await request
       .post("/occurrences")
       .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ plantId, latitude: -27.4705, longitude: 153.026, stateProvince: "Queensland" });
+      .send({ plantId, latitude: -27.4705, longitude: 153.026, regionCode: "Queensland" });
 
     const res = await request.get(`/occurrences?regionId=${regionId}`);
     expect(res.status).toBe(200);
-    expect(res.body.data.every((o: any) => o.regionId === regionId)).toBe(true);
+    expect(res.body.data.every((o: any) => o.region.id === regionId)).toBe(true);
   });
 });
 
@@ -148,23 +148,25 @@ describe("POST /occurrences", () => {
       .send({ plantId, latitude: -27.4705, longitude: 153.026 });
 
     expect(res.status).toBe(201);
-    expect(res.body.data.plantId).toBe(plantId);
+    expect(res.body.data.plant.id).toBe(plantId);
     expect(res.body.data.latitude).toBe(-27.4705);
     expect(res.body.data.longitude).toBe(153.026);
+    expect(res.body.data).toHaveProperty("plant");
+    expect(res.body.data).toHaveProperty("region");
     occurrenceId = res.body.data.id;
   });
 
-  it("resolves stateProvince to regionId automatically", async () => {
+  it("resolves regionCode to regionId automatically", async () => {
     const res = await request
       .post("/occurrences")
       .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ plantId, latitude: -27.4705, longitude: 153.026, stateProvince: "Queensland" });
+      .send({ plantId, latitude: -27.4705, longitude: 153.026, regionCode: "Queensland" });
 
     expect(res.status).toBe(201);
     expect(res.body.data.regionId).toBe(regionId);
   });
 
-  it("sets regionId to null when stateProvince does not match any region", async () => {
+  it("returns 404 when regionCode does not match any region", async () => {
     const res = await request
       .post("/occurrences")
       .set("Authorization", `Bearer ${contributorToken}`)
@@ -172,11 +174,11 @@ describe("POST /occurrences", () => {
         plantId,
         latitude: -27.4705,
         longitude: 153.026,
-        stateProvince: "Nonexistent State",
+        regionCode: "Nonexistent State",
       });
 
-    expect(res.status).toBe(201);
-    expect(res.body.data.regionId).toBeNull();
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe("Region not found");
   });
 
   it("returns 400 when plantId is missing", async () => {
@@ -241,12 +243,14 @@ describe("POST /occurrences", () => {
     const res = await request
       .put(`/occurrences/${created.body.data.id}`)
       .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ latitude: -33.86, longitude: 151.2, stateProvince: "Queensland" });
+      .send({ latitude: -33.86, longitude: 151.2, regionCode: "Queensland" });
 
     expect(res.status).toBe(200);
     expect(res.body.data.latitude).toBe(-33.86);
     expect(res.body.data.longitude).toBe(151.2);
-    expect(res.body.data.regionId).toBe(regionId);
+    expect(res.body.data.region.id).toBe(regionId);
+    expect(res.body.data).toHaveProperty("plant");
+    expect(res.body.data).toHaveProperty("region");
   });
 
   it("returns 400 when plantId is different", async () => {
@@ -276,6 +280,22 @@ describe("POST /occurrences", () => {
       .send({ latitude: -33.86, longitude: 151.2 });
 
     expect(res.status).toBe(404);
+    expect(res.body.error).toBe("Occurrence not found");
+  });
+
+  it("returns 404 when regionCode does not match any region during update", async () => {
+    const created = await request
+      .post("/occurrences")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ plantId, latitude: -27.4705, longitude: 153.026 });
+
+    const res = await request
+      .put(`/occurrences/${created.body.data.id}`)
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ regionCode: "Nonexistent State" });
+
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe("Region not found");
   });
 
   it("returns 403 for VIEWER role", async () => {
