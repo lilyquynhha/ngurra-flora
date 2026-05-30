@@ -86,9 +86,9 @@ export const getAllOccurrences = async (
     ]);
 
     res.json({
-      total: total,
-      data: occurrences,
+      total,
       pagination: { page, limit, totalPages: Math.ceil(total / limit) },
+      data: occurrences,
     });
   } catch (err) {
     next(err);
@@ -122,12 +122,23 @@ export const getOccurrencesByPlant = async (
         orderBy: { recordedDate: "desc" },
         select: {
           id: true,
+          plant: {
+            select: {
+              id: true,
+              scientificName: true,
+              commonName: true,
+              family: true,
+              conservationStatus: true,
+            },
+          },
+          region: { select: { id: true, name: true, code: true } },
           latitude: true,
           longitude: true,
           recordedDate: true,
           basisOfRecord: true,
           dataProvider: true,
-          region: { select: { id: true, name: true, code: true } },
+          externalId: true,
+          createdAt: true,
         },
       }),
       prisma.occurrence.count({ where: { plantId: plantId as string } }),
@@ -135,8 +146,8 @@ export const getOccurrencesByPlant = async (
 
     res.json({
       total,
-      data: occurrences,
       pagination: { page, limit, totalPages: Math.ceil(total / limit) },
+      data: occurrences,
     });
   } catch (err) {
     next(err);
@@ -172,10 +183,18 @@ export const getNearbyOccurrences = async (
       plant_id: string;
       scientific_name: string;
       common_name: string | null;
+      family: string | null;
+      conservation_status: string | null;
+      region_id: string;
+      name: string;
+      code: string;
       latitude: number;
       longitude: number;
       recorded_date: Date | null;
+      basis_of_record: string | null;
       data_provider: string | null;
+      external_id: string | null;
+      created_at: Date;
       distance_km: number;
     }> = await prisma.$queryRaw`
       SELECT
@@ -183,10 +202,18 @@ export const getNearbyOccurrences = async (
         o.plant_id,
         p.scientific_name,
         p.common_name,
+        p.family,
+        p.conservation_status,
+        o.region_id,
+        r.name,
+        r.code,
         o.latitude,
         o.longitude,
         o.recorded_date,
+        o.basis_of_record,
         o.data_provider,
+        o.external_id,
+        o.created_at,
         -- calculate the distance between the specified location and the occurence (in km)
         ROUND(
           (ST_Distance(
@@ -197,6 +224,7 @@ export const getNearbyOccurrences = async (
         ) AS distance_km
       FROM occurrences o
       JOIN plants p ON p.id = o.plant_id
+      JOIN regions r ON r.id = o.region_id
       -- check if the specified location falls within the radius
       WHERE ST_DWithin(
         o.location,
@@ -207,14 +235,37 @@ export const getNearbyOccurrences = async (
       LIMIT 50
     `;
 
+    // Map to returned JSON shape
+    const data = results.map((r: any) => ({
+      id: r.id,
+      plant: {
+        id: r.plant_id,
+        scientificName: r.scientific_name,
+        commonName: r.common_name,
+        family: r.family,
+        conservationStatus: r.conservation_status ?? null,
+      },
+      region: r.region_id
+        ? { id: r.region_id, name: r.name ?? null, code: r.code ?? null }
+        : null,
+      latitude: r.latitude,
+      longitude: r.longitude,
+      recordedDate: r.recorded_date ?? null,
+      basisOfRecord: r.basis_of_record ?? null,
+      dataProvider: r.data_provider ?? null,
+      externalId: r.external_id ?? null,
+      createdAt: r.created_at,
+      distance_km: Number(r.distance_km),
+    }));
+
     res.json({
-      data: results,
+      total: data.length,
       meta: {
         lat,
         lng,
         radiusKm,
-        total: results.length,
       },
+      data,
     });
   } catch (err) {
     next(err);
@@ -244,20 +295,39 @@ export const getOccurrencesInBbox = async (
       plant_id: string;
       scientific_name: string;
       common_name: string | null;
+      family: string | null;
+      conservation_status: string | null;
+      region_id: string;
+      name: string;
+      code: string;
       latitude: number;
       longitude: number;
       recorded_date: Date | null;
+      basis_of_record: string | null;
+      data_provider: string | null;
+      external_id: string | null;
+      created_at: Date;
     }> = await prisma.$queryRaw`
       SELECT
         o.id,
         o.plant_id,
         p.scientific_name,
         p.common_name,
+        p.family,
+        p.conservation_status,
+        o.region_id,
+        r.name,
+        r.code,
         o.latitude,
         o.longitude,
-        o.recorded_date
+        o.recorded_date,
+        o.basis_of_record,
+        o.data_provider,
+        o.external_id,
+        o.created_at
       FROM occurrences o
       JOIN plants p ON p.id = o.plant_id
+      JOIN regions r ON r.id = o.region_id
       -- check if the specified location falls within the bounding box
       WHERE o.location && ST_MakeEnvelope( -- create the rectangular bounding box
         ${minLng}, -- left edge
@@ -270,7 +340,26 @@ export const getOccurrencesInBbox = async (
       LIMIT 100
     `;
 
-    res.json({ data: results });
+    const data = results.map((r: any) => ({
+      id: r.id,
+      plant: {
+        id: r.plant_id,
+        scientificName: r.scientific_name,
+        commonName: r.common_name,
+        family: r.family,
+        conservationStatus: r.conservation_status ?? null,
+      },
+      region: r.region_id ? { id: r.region_id, name: r.name ?? null, code: r.code ?? null } : null,
+      latitude: r.latitude,
+      longitude: r.longitude,
+      recordedDate: r.recorded_date ?? null,
+      basisOfRecord: r.basis_of_record ?? null,
+      dataProvider: r.data_provider ?? null,
+      externalId: r.external_id ?? null,
+      createdAt: r.created_at,
+    }));
+
+    res.json({ data });
   } catch (err) {
     next(err);
   }
