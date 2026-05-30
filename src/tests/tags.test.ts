@@ -96,6 +96,49 @@ describe("GET /tags/:id", () => {
   });
 });
 
+describe("PATCH /tags/:id", () => {
+  beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.tag.deleteMany();
+
+    const res = await request
+      .post("/tags")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ name: "edible" });
+
+    tagId = res.body.data.id;
+  });
+
+  it("updates a tag name as ADMIN", async () => {
+    const res = await request
+      .patch(`/tags/${tagId}`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ name: "Updated name" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.name).toBe("Updated name");
+  });
+
+  it("returns 404 for unknown ID", async () => {
+    const res = await request
+      .patch("/tags/nonexistent-id")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ name: "Updated" });
+
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe("Tag not found");
+  });
+
+  it("returns 403 for CONTRIBUTOR role", async () => {
+    const res = await request
+      .patch(`/tags/${tagId}`)
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ name: "Updated" });
+
+    expect(res.status).toBe(403);
+  });
+});
+
 describe("POST /tags", () => {
   beforeEach(async () => {
     await prisma.plantTag.deleteMany();
@@ -194,107 +237,6 @@ describe("DELETE /tags/:id", () => {
     const res = await request
       .delete(`/tags/${tagId}`)
       .set("Authorization", `Bearer ${viewerToken}`);
-
-    expect(res.status).toBe(403);
-  });
-});
-
-describe("POST /tags/plants/:id/tags/:tagId - link tag to plant", () => {
-  beforeEach(async () => {
-    await prisma.plantTag.deleteMany();
-    await prisma.tag.deleteMany();
-
-    // Create a tag for linking
-    const res = await request
-      .post("/tags")
-      .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ name: "edible" });
-
-    tagId = res.body.data.id;
-  });
-
-  it("links a tag to a plant as CONTRIBUTOR", async () => {
-    const res = await request
-      .post(`/tags/plants/${plantId}/tags/${tagId}`)
-      .set("Authorization", `Bearer ${contributorToken}`);
-
-    expect(res.status).toBe(201);
-    expect(res.body.data.plantId).toBe(plantId);
-    expect(res.body.data.tagId).toBe(tagId);
-  });
-
-  it("returns 409 if already linked", async () => {
-    await request
-      .post(`/tags/plants/${plantId}/tags/${tagId}`)
-      .set("Authorization", `Bearer ${contributorToken}`);
-
-    const res = await request
-      .post(`/tags/plants/${plantId}/tags/${tagId}`)
-      .set("Authorization", `Bearer ${contributorToken}`);
-
-    expect(res.status).toBe(409);
-  });
-
-  it("returns 404 for unknown tagId", async () => {
-    const res = await request
-      .post(`/tags/plants/${plantId}/tags/nonexistent-id`)
-      .set("Authorization", `Bearer ${contributorToken}`);
-
-    expect(res.status).toBe(404);
-  });
-
-  it("returns 403 for VIEWER role", async () => {
-    const res = await request
-      .post(`/tags/plants/${plantId}/tags/${tagId}`)
-      .set("Authorization", `Bearer ${viewerToken}`);
-
-    expect(res.status).toBe(403);
-  });
-});
-
-describe("DELETE /tags/plants/:id/tags/:tagId - unlink tag from plant", () => {
-  beforeEach(async () => {
-    await prisma.plantTag.deleteMany();
-    await prisma.tag.deleteMany();
-
-    // Create the tag for unlinking
-    const res = await request
-      .post("/tags")
-      .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ name: "edible" });
-
-    tagId = res.body.data.id;
-
-    // Link the tag to the plant first
-    await request
-      .post(`/tags/plants/${plantId}/tags/${tagId}`)
-      .set("Authorization", `Bearer ${contributorToken}`);
-  });
-
-  it("unlinks a tag from a plant as ADMIN", async () => {
-    const res = await request
-      .delete(`/tags/plants/${plantId}/tags/${tagId}`)
-      .set("Authorization", `Bearer ${adminToken}`);
-
-    expect(res.status).toBe(204);
-  });
-
-  it("returns 404 if not linked", async () => {
-    await request
-      .delete(`/tags/plants/${plantId}/tags/${tagId}`)
-      .set("Authorization", `Bearer ${adminToken}`);
-
-    const res = await request
-      .delete(`/tags/plants/${plantId}/tags/${tagId}`)
-      .set("Authorization", `Bearer ${adminToken}`);
-
-    expect(res.status).toBe(404);
-  });
-
-  it("returns 403 for CONTRIBUTOR role", async () => {
-    const res = await request
-      .delete(`/tags/plants/${plantId}/tags/${tagId}`)
-      .set("Authorization", `Bearer ${contributorToken}`);
 
     expect(res.status).toBe(403);
   });

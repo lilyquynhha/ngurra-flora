@@ -180,8 +180,6 @@ describe("GET /plants/nearby", () => {
     const res = await request
       .get("/plants/nearby")
       .query({ lat: -33.865143, lng: 151.2099, radius: 50 });
-
-    console.log(res.body);
     expect(res.status).toBe(200);
     expect(res.body.data).toBeInstanceOf(Array);
 

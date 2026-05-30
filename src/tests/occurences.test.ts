@@ -80,7 +80,7 @@ describe("GET /occurrences", () => {
       plantId,
       latitude: -27.4705,
       longitude: 153.026,
-      regionCode: "Queensland",
+      regionCode: "QLD",
     });
 
     const res = await request.get("/occurrences");
@@ -105,7 +105,7 @@ describe("GET /occurrences", () => {
     await request
       .post("/occurrences")
       .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ plantId, latitude: -27.4705, longitude: 153.026, regionCode: "Queensland" });
+      .send({ plantId, latitude: -27.4705, longitude: 153.026, regionCode: "QLD" });
 
     const res = await request.get(`/occurrences?regionId=${regionId}`);
     expect(res.status).toBe(200);
@@ -160,10 +160,10 @@ describe("POST /occurrences", () => {
     const res = await request
       .post("/occurrences")
       .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ plantId, latitude: -27.4705, longitude: 153.026, regionCode: "Queensland" });
+      .send({ plantId, latitude: -27.4705, longitude: 153.026, regionCode: "QLD" });
 
     expect(res.status).toBe(201);
-    expect(res.body.data.regionId).toBe(regionId);
+    expect(res.body.data.region.id).toBe(regionId);
   });
 
   it("returns 404 when regionCode does not match any region", async () => {
@@ -241,9 +241,9 @@ describe("POST /occurrences", () => {
       .send({ plantId, latitude: -27.4705, longitude: 153.026, basisOfRecord: "OBSERVATION" });
 
     const res = await request
-      .put(`/occurrences/${created.body.data.id}`)
+      .patch(`/occurrences/${created.body.data.id}`)
       .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ latitude: -33.86, longitude: 151.2, regionCode: "Queensland" });
+      .send({ latitude: -33.86, longitude: 151.2, regionCode: "QLD" });
 
     expect(res.status).toBe(200);
     expect(res.body.data.latitude).toBe(-33.86);
@@ -265,7 +265,7 @@ describe("POST /occurrences", () => {
       .send({ scientificName: "Other Scientific Name", commonName: "Other Common Name" });
 
     const res = await request
-      .put(`/occurrences/${created.body.data.id}`)
+      .patch(`/occurrences/${created.body.data.id}`)
       .set("Authorization", `Bearer ${contributorToken}`)
       .send({ plantId: otherPlant.body.data.id, latitude: -33.86, longitude: 151.2 });
 
@@ -275,7 +275,7 @@ describe("POST /occurrences", () => {
 
   it("returns 404 for unknown occurrence id", async () => {
     const res = await request
-      .put("/occurrences/nonexistent-id")
+      .patch("/occurrences/nonexistent-id")
       .set("Authorization", `Bearer ${contributorToken}`)
       .send({ latitude: -33.86, longitude: 151.2 });
 
@@ -290,7 +290,7 @@ describe("POST /occurrences", () => {
       .send({ plantId, latitude: -27.4705, longitude: 153.026 });
 
     const res = await request
-      .put(`/occurrences/${created.body.data.id}`)
+      .patch(`/occurrences/${created.body.data.id}`)
       .set("Authorization", `Bearer ${contributorToken}`)
       .send({ regionCode: "Nonexistent State" });
 
@@ -310,11 +310,12 @@ describe("POST /occurrences", () => {
 
 describe("GET /occurrences/nearby", () => {
   beforeEach(async () => {
-    // Seed an occurence
+    // Seed an occurrence with a region so the spatial query can join successfully
     await request.post("/occurrences").set("Authorization", `Bearer ${contributorToken}`).send({
       plantId,
       latitude: -27.4705,
       longitude: 153.026,
+      regionCode: "QLD",
     });
   });
 
@@ -327,7 +328,7 @@ describe("GET /occurrences/nearby", () => {
     expect(res.body.meta.lat).toBe(-27.4705);
     expect(res.body.meta.lng).toBe(153.026);
     expect(res.body.meta.radiusKm).toBe(10);
-    expect(res.body.meta).toHaveProperty("total");
+    expect(res.body).toHaveProperty("total");
   });
 
   it("returns empty data when no occurrences are within radius", async () => {
@@ -361,7 +362,7 @@ describe("GET /occurrences/bbox", () => {
     await request
       .post("/occurrences")
       .set("Authorization", `Bearer ${contributorToken}`)
-      .send({ plantId, latitude: -27.4705, longitude: 153.026 });
+      .send({ plantId, latitude: -27.4705, longitude: 153.026, regionCode: "QLD" });
   });
 
   it("returns occurrences within the bounding box", async () => {
