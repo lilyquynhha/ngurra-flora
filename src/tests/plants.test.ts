@@ -141,6 +141,42 @@ describe("GET /plants/:id", () => {
   });
 });
 
+describe("PATCH /plants/:id", () => {
+  beforeEach(async () => {
+    await prisma.plantTag.deleteMany();
+    await prisma.plantRegion.deleteMany();
+    await prisma.occurrence.deleteMany();
+    await prisma.plant.deleteMany();
+
+    const res = await request
+      .post("/plants")
+      .set("Authorization", `Bearer ${contributorToken}`)
+      .send({ scientificName: "Eucalyptus globulus", commonName: "Blue Gum" });
+
+    plantId = res.body.data.id;
+  });
+
+  it("updates a plant scientific name as ADMIN", async () => {
+    const res = await request
+      .patch(`/plants/${plantId}`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ scientificName: "Updated" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.scientificName).toBe("Updated");
+  });
+
+  it("returns 404 for unknown ID", async () => {
+    const res = await request
+      .patch("/plants/nonexistent-id")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ scientificName: "Updated" });
+
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe("Plant not found");
+  });
+});
+
 describe("GET /plants/nearby", () => {
   beforeEach(async () => {
     await prisma.plantTag.deleteMany();
