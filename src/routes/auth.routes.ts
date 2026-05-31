@@ -1,7 +1,12 @@
 import { Router } from "express";
-import { register, login, me } from "../controllers/auth.controller";
+import { register, login, me, changePassword } from "../controllers/auth.controller";
 import { authenticate } from "../middleware/authenticate";
-import { LoginSchema, RegisterSchema, validate } from "../lib/schemaValidation";
+import {
+  LoginSchema,
+  RegisterSchema,
+  ChangePasswordSchema,
+  validate,
+} from "../lib/schemaValidation";
 
 const router = Router();
 
@@ -133,5 +138,60 @@ router.post("/login", validate(LoginSchema), login);
  *               $ref: '#/components/schemas/Error'
  */
 router.get("/me", authenticate, me);
+
+/**
+ * @swagger
+ * /auth/change-password:
+ *   post:
+ *     summary: Change the current user's password
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [currentPassword, newPassword]
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 example: password123
+ *               newPassword:
+ *                 type: string
+ *                 minLength: 8
+ *                 example: newPassword456
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Password updated successfully
+ *       400:
+ *         description: Missing or invalid password fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Missing, invalid token or invalid current password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.post("/change-password", authenticate, validate(ChangePasswordSchema), changePassword);
 
 export default router;

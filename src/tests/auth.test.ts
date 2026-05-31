@@ -86,3 +86,48 @@ describe("GET /auth/me", () => {
     expect(res.status).toBe(401);
   });
 });
+
+describe("POST /auth/change-password", () => {
+  it("updates the password when current password is valid", async () => {
+    const reg = await request.post("/auth/register").send(testUser);
+    const token = reg.body.token;
+
+    const res = await request
+      .post("/auth/change-password")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ currentPassword: testUser.password, newPassword: "newPassword456" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe("Password updated successfully");
+
+    const loginRes = await request.post("/auth/login").send({
+      email: testUser.email,
+      password: "newPassword456",
+    });
+
+    expect(loginRes.status).toBe(200);
+    expect(loginRes.body.token).toBeDefined();
+  });
+
+  it("returns 401 when current password is incorrect", async () => {
+    const reg = await request.post("/auth/register").send(testUser);
+    const token = reg.body.token;
+
+    const res = await request
+      .post("/auth/change-password")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ currentPassword: "wrongpassword", newPassword: "newPassword456" });
+
+    expect(res.status).toBe(401);
+    expect(res.body.error).toBe("Incorrect current password");
+  });
+
+  it("returns 401 without a token", async () => {
+    const res = await request.post("/auth/change-password").send({
+      currentPassword: testUser.password,
+      newPassword: "newPassword456",
+    });
+
+    expect(res.status).toBe(401);
+  });
+});
